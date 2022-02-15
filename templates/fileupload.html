@@ -1,0 +1,48 @@
+<html>
+    <body>
+<form name = "form" enctype = "multipart/form-data"
+         action = "{% url "saved" %}" method = "POST" >{% csrf_token %}
+      </form>
+   <div style = "max-width:470px;">
+            <div style="text-align: center;">
+                <label>
+                    <input type = "text" style = "margin-left:20%;"
+                    placeholder = "Author of project" name = "projectAuthor" />
+                </label>
+            </div>
+         </div>
+      <div style = "max-width:470px;">
+            <div style="text-align: center;">
+                <label>
+                    <input type = "text" style = "margin-left:20%;"
+                    placeholder = "Title of project" name = "projectTitle" />
+                </label>
+            </div>
+         </div>
+      <div style = "max-width:470px;">
+            <div style="text-align: center;">
+                <label>
+                    <input type = "text" style = "margin-left:20%;"
+                    placeholder = "Project date" name = "date" />
+                </label>
+            </div>
+         </div>
+   <div style = "max-width:470px;">
+            <div style="text-align: center;">
+                <label>
+                    <input type = "text" style = "margin-left:20%;"
+                    placeholder = "Project file" name = "file" />
+                </label>
+            </div>
+         </div>
+       <div style = "max-width:470px;">
+            <div style="text-align: center;">
+
+               <button style = ";background-color:#4285F4; margin-top:8%;
+                  height:35px; width:80%; margin-left:19%;" type = "submit" value = "Upload" >
+                  <strong>Upload</strong>
+               </button>
+            </div>
+         </div>
+    </body>
+</html>

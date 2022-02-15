@@ -1,3 +1,11 @@
+from django.conf.urls import url
+from django.views.generic import TemplateView
+from django.contrib import admin
+from django.urls import path
+
+from capstone import settings
+from home import views
+
 """capstone URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -13,11 +21,10 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path
-
-from home import views
 
 urlpatterns = [
-    path('', views.home)
+    path('', views.home),
+    path('upload/', TemplateView.as_view(template_name='fileupload.html')),
+    path('saved/', views.saveFileUpload, name='saved')
+
 ]

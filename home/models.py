@@ -7,3 +7,7 @@ class Project(models.Model):
     date = models.DateField()
     projectTitle = models.CharField(max_length=100)
     file = models.FileField(upload_to='projects')
+
+
+class Meta:
+    db_table = "pending_approval"
