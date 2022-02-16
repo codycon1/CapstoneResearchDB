@@ -13,15 +13,14 @@ def home(request):
 def saveFileUpload(request):
     saved = False
     if request.method == 'POST':
-        form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid():
+        capturedForm = UploadFileForm(request.POST, request.FILES)
+        if capturedForm.is_valid():
             form = UploadFileForm()
-            form.projectAuthor = form.cleaned_data['projectAuthor']
-            form.projectTitle = form.cleaned_data['projectTitle']
-            form.date = form.cleaned_data['date']
-            form.file = form.cleaned_data['file']
-            form.save()
+            form.projectAuthor = capturedForm.cleaned_data['projectAuthor']
+            form.projectTitle = capturedForm.cleaned_data['projectTitle']
+            form.date = capturedForm.cleaned_data['date']
+            form.file = capturedForm.cleaned_data['file']
             saved = True
     else:
-        form = UploadFileForm()
+        capturedForm = UploadFileForm()
     return render(request, 'saved.html', locals())
