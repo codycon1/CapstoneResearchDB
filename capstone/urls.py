@@ -23,5 +23,6 @@ from django.conf import settings
 urlpatterns = [
                   path('admin/', admin.site.urls),
                   path('', include(home.urls)),
-                  path('upload/', include(home.urls))
+                  path('', include('django.contrib.auth.urls')),
+                  path('upload/', include(home.urls)),
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
