@@ -25,6 +25,6 @@ Including another URLconf
 urlpatterns = [
     path('', views.home),
     path('upload/', TemplateView.as_view(template_name='fileupload.html')),
-    path('saved/', views.saveFileUpload,name="saved")
+    path('saved/', views.saveFileUpload, name="saved")
 
 ]

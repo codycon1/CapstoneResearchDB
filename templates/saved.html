@@ -8,6 +8,7 @@
 <body>
     {%if saved %}
         <strong>The file was saved successfully</strong>
+        <a href = "{{file_url}}" download="{{projectTitle}}"><button type="button">Download</button></a>
     {%  endif %}
 {% if not saved %}
     <strong>The file was not saved.</strong>
