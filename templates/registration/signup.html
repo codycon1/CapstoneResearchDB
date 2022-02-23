@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <header class="text-center text-white masthead"
+            style="background:url('{% static 'img/bg-masthead.jpg' %}')no-repeat center center;background-size:cover;">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-9 mx-auto position-relative">
+                    <h1 class="mb-5">Sign in</h1>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Log in</button>
+            </form>
+        </div>
+    </header>
+{% endblock %}

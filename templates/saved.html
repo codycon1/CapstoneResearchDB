@@ -1,12 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
    <body>
-      {% if saved %}
-         <strong>The project was saved.</strong>
-      {% endif %}
-
-      {% if not saved %}
-         <strong>The project was unsuccessfully saved</strong>
-      {% endif %}
+   <html>
+<head>
+    <title>Download Files</title>
+</head>
+<body>
+    {%if saved %}
+        <strong>The file was saved successfully</strong>
+    {%  endif %}
+{% if not saved %}
+    <strong>The file was not saved.</strong>
+{% endif %}
+</body>
+</html>
    </body>
 </html>
