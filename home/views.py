@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.core.files.storage import FileSystemStorage
 
 from .forms import *
 from .models import *
@@ -15,11 +16,14 @@ def saveFileUpload(request):
     if request.method == 'POST':
         capturedForm = UploadFileForm(request.POST, request.FILES)
         if capturedForm.is_valid():
+            file = request.FILES['file']
+            fs = FileSystemStorage()
             form = UploadFileForm()
             form.projectAuthor = capturedForm.cleaned_data['projectAuthor']
             form.projectTitle = capturedForm.cleaned_data['projectTitle']
             form.date = capturedForm.cleaned_data['date']
-            form.file = capturedForm.cleaned_data['file']
+            filename = fs.save(file.name, file)
+            file_url = fs.url(filename)
             saved = True
     else:
         capturedForm = UploadFileForm()
