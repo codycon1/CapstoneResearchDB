@@ -1,14 +1,27 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.core.files.storage import FileSystemStorage
-
+from django.views.generic import ListView
 from .forms import *
 from .models import *
+from django.db.models import Q
 
 
 # Create your views here.
 def home(request):
     return render(request, 'home.html')
+
+
+def SearchResults(ListView):
+    model = Project
+    template = 'SearchResults.html'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        object_list = Project.objects.filter(
+            Q(projectTitle__icontains=query) | Q(projectAuthor__icontains=query)
+        )
+        return object_list
 
 
 def saveFileUpload(request):
