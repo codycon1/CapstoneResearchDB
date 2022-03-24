@@ -6,6 +6,7 @@ from django.urls import path
 
 from capstone import settings
 from home import views
+from home.views import SearchRequest
 
 """capstone URL Configuration
 
@@ -26,8 +27,8 @@ Including another URLconf
 urlpatterns = [
                   path('', views.home),
                   path('Search/', TemplateView.as_view(template_name='SearchPage.html')),
-                  path('upload/', TemplateView.as_view(template_name='fileupload.html')),
+                  path('upload/', views.saveFileUpload, name='saveFileUpload'),
                   path('saved/', views.saveFileUpload, name="saved"),
-                  path('SearchResults/', views.SearchResults, name="SearchResults")
+                  path('SearchResults/', SearchRequest, name="SearchRequest")
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

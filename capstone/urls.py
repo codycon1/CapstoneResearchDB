@@ -26,5 +26,5 @@ urlpatterns = [
                   path('', include(home.urls)),
                   path('', include(users.urls)),
                   path('', include('django.contrib.auth.urls')),
-                  path('upload/', include(home.urls)),
+                  path('', include(home.urls)),
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

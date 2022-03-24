@@ -4,11 +4,11 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import Project
 
 
-class UploadFileForm(forms.Form):
-    projectAuthor = forms.CharField(max_length=1000)
-    date = forms.DateField()
-    projectTitle = forms.CharField(max_length=100)
-    file = forms.FileField()
+class UploadFileForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = ('projectAuthor', 'date', 'projectTitle', 'file')
+
 
 class SignupForm(UserCreationForm):
     first_name = forms.CharField(max_length=32, required=True, help_text='First Name')

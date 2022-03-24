@@ -13,3 +13,6 @@ class proposal(models.Model):
     description = models.CharField(max_length=256, blank=False)
     # user = models.ForeignKey(users.User)
     approval = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = "proposals"

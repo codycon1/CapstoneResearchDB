@@ -8,9 +8,6 @@ class Project(models.Model):
     projectTitle = models.CharField(max_length=100)
     file = models.FileField(upload_to='projects/')
 
-    class Meta:
-        db_table = "pending_approval"
-        verbose_name_plural = "projects"
-
     def __str__(self):
-        return self.projectTitle
+        self.projectInfo = (self.projectAuthor, self.date, self.projectTitle, self.file)
+        return str(self.projectInfo)

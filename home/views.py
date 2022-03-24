@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.core.files.storage import FileSystemStorage
 from django.views.generic import ListView
-from .forms import *
+from .forms import UploadFileForm
 from .models import *
 from django.db.models import Q
 
@@ -12,32 +12,28 @@ def home(request):
     return render(request, 'home.html')
 
 
-def SearchResults(ListView):
-    model = Project
-    template = 'SearchResults.html'
-
-    def get_queryset(self):
-        query = self.request.GET.get('q')
-        object_list = Project.objects.filter(
-            Q(projectTitle__icontains=query) | Q(projectAuthor__icontains=query)
-        )
-        return object_list
+def SearchRequest(request):
+    if request.method == 'GET':
+        projectName = request.GET.get("search")
+        status = Project.objects.filter(Q(projectTitle__icontains=projectName) | Q(projectAuthor__icontains=projectName))
+        return render(request, "SearchResults.html", {"projects": status})
+    else:
+        return render(request, "SearchResults.html", {})
 
 
 def saveFileUpload(request):
-    saved = False
-    if request.method == 'POST':
-        capturedForm = UploadFileForm(request.POST, request.FILES)
-        if capturedForm.is_valid():
-            file = request.FILES['file']
-            fs = FileSystemStorage()
-            form = UploadFileForm()
-            form.projectAuthor = capturedForm.cleaned_data['projectAuthor']
-            form.projectTitle = capturedForm.cleaned_data['projectTitle']
-            form.date = capturedForm.cleaned_data['date']
-            filename = fs.save(file.name, file)
-            file_url = fs.url(filename)
-            saved = True
-    else:
-        capturedForm = UploadFileForm()
-    return render(request, 'saved.html', locals())
+    form = UploadFileForm()
+    try:
+        if request.method == 'POST':
+            form = UploadFileForm(request.POST, request.FILES)
+            if form.is_valid():
+                form.save()
+                project_info = form.instance()
+                return render(request, 'fileupload.html', {'form': form, 'project_info': project_info})
+            else:
+                form = UploadFileForm()
+            return render(request, 'fileupload.html', {'form': form})
+    except Exception as identifier:
+        print(identifier)
+    return render(request, 'fileupload.html', {'form': form})
+

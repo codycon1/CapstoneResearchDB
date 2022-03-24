@@ -5,15 +5,13 @@
     <title>Search Results</title>
 </head>
 <body>
-<h1>Results</h1>
-<ul>
-    {% for project in object_list %}
-    <li>
-        {{ project.projectTitle }}
-        {{ project.projectAuthor }}
-    </li>
-    {% end for %}
-</ul>
-
+{% if projects %}
+{% for each_project in projects %}
+    <!--Upon successful search book image with hyperlink appears -->
+    <p>{{each_project.projectTitle}}</p>
+    <p>{{each_project.projectAuthor}}</p>
+    <p><a href="{{ each_project.file.url }}">{{ each_project.file }}</a></p>
+{% endfor %}
+{% endif %}
 </body>
 </html>
