@@ -10,7 +10,8 @@
     <!--Upon successful search book image with hyperlink appears -->
     <p>{{each_project.projectTitle}}</p>
     <p>{{each_project.projectAuthor}}</p>
-    <p><a href="{{ each_project.file.url }}">{{ each_project.file }}</a></p>
+    <p>{{ each_project.date }}</p>
+    <p><a href = "{{each_project.file.url}}"><button type="button">Download</button></a></p>
 {% endfor %}
 {% endif %}
 </body>
