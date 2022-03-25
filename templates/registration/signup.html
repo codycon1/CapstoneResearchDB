@@ -2,21 +2,20 @@
 {% load static %}
 
 {% block content %}
-    <header class="text-center text-white masthead"
-            style="background:url('{% static 'img/bg-masthead.jpg' %}')no-repeat center center;background-size:cover;">
-        <div class="container">
-            <div class="row">
-                <div class="col-xl-9 mx-auto position-relative">
-                    <h1 class="mb-5">Sign Up</h1>
-                </div>
+    <h4 class="">Sign up</h4>
+    <form method="post">
+        {% csrf_token %}
+
+        {% for field in form %}
+
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                <input class="form-control" id="{{ field.id_for_label }}" maxlength="30" name="{{ field.html_name }}"
+                       placeholder="{{ field.label }}" type="{{ field.field.widget.input_type }}"/>
+                {{ field.errors }}
             </div>
-        </div>
-        <div class="container">
-            <form method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit">Sign up</button>
-            </form>
-        </div>
-    </header>
+
+        {% endfor %}
+        <button type="submit" class="btn btn-pill btn-wide btn-primary my-2">Sign up</button>
+    </form>
 {% endblock %}

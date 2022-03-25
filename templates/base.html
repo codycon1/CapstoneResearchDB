@@ -21,8 +21,12 @@
 
         {% if user.is_authenticated %}
             <div class="collapse navbar-collapse" id="navcol-1">
-                <a class="btn btn-primary ms-auto" role="button"href="/logout">Sign Out</a>
+                <a class="btn btn-primary ms-auto" role="button" href="/logout">Sign Out</a>
                 <a class="btn btn-secondary ms-auto" role="button" href="/upload">Upload</a>
+
+                <a class="btn btn-secondary ms-auto" role="button" href="/submit">Submit proposal</a>
+                <a class="btn btn-secondary ms-auto" role="button" href="/mysubmissions">My proposals</a>
+                <a class="btn btn-secondary ms-auto" role="button" href="/admin">Admin</a> {# TODO: Check if staff  #}
             </div>
         {% else %}
             <div class="collapse navbar-collapse" id="navcol-1">
