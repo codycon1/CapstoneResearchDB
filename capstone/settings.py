@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'home',
     'users',
     'proposal',
-    'db',
 ]
 MEDIA_ROOT = os.path.join(BASE_DIR, 'projects')
 MEDIA_URL = 'projects/'
