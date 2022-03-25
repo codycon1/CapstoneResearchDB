@@ -18,3 +18,9 @@ def submit_proposal(request):
         form = SubmitProposalForm()
 
     return render(request, 'newproposal.html', {'form': form, })
+
+def my_submissions(request):
+    context = {}
+    context['accepted'] = proposal.objects.filter(approval=True)
+    context['pending'] = proposal.objects.filter(approval=False)
+    return render(request, 'myproposals.html', context)
