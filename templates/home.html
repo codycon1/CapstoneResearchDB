@@ -11,9 +11,10 @@
                     <h1 class="mb-5">Western Research Database</h1>
                 </div>
                 <div class="col-md-10 col-lg-8 col-xl-7 mx-auto position-relative">
-                    <form>
+                     <form name="myform" method="GET" action="{% url 'SearchRequest' %}">
                         <div class="row">
-
+                            {% csrf_token %}
+                                <input type="text" name="search" placeholder="Search" />
                         </div>
                     </form>
                 </div>

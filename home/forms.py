@@ -4,6 +4,12 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import Project
 
 
+class editProjectForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = ('approval',)
+
+
 class UploadFileForm(forms.ModelForm):
     class Meta:
         model = Project

@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.core.files.storage import FileSystemStorage
 from django.views.generic import ListView
-from .forms import UploadFileForm
+from .forms import *
 from .models import *
 from proposal.models import proposal
 from django.db.models import Q
@@ -12,6 +12,13 @@ from django.db.models import Q
 # Create your views here.
 def home(request):
     return render(request, 'home.html')
+
+
+def viewSubmissions(request):
+    context = {}
+    context['accepted'] = Project.objects.filter(approval=True)
+    context['pending'] = Project.objects.filter(approval=False)
+    return render(request, 'myproposals.html', context)
 
 
 def SearchRequest(request):
@@ -44,12 +51,11 @@ def saveFileUpload(request):
 @login_required
 def approveProposal(request):
     context = {}
-    context['pending'] = proposal.objects.filter(approval=False)
-
+    context['pending'] = Project.objects.filter(approval=False)
     if request.method == 'POST':
         id = request.POST.get('id', 0)
-        proposalObject = proposal.objects.get(id=request.POST['id'])
-        title = request.POST.get('title', "")
+        proposalObject = Project.objects.get(id=request.POST['id'])
+        title = request.POST.get('projectTitle', "")
         if 'approve' in request.POST:
             proposalObject.approval = True
             proposalObject.save()

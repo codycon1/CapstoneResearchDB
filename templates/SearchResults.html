@@ -1,18 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
+{% block content %}
 <head>
     <meta charset="UTF-8">
     <title>Search Results</title>
 </head>
-<body>
+    <body>
+    <h1>Results Found</h1>
 {% if projects %}
 {% for each_project in projects %}
-    <!--Upon successful search book image with hyperlink appears -->
     <p>{{each_project.projectTitle}}</p>
     <p>{{each_project.projectAuthor}}</p>
     <p>{{ each_project.date }}</p>
     <p><a href = "{{each_project.file.url}}"><button type="button">Download</button></a></p>
+    <hr/>
 {% endfor %}
 {% endif %}
-</body>
-</html>
+    </body>
+{% endblock %}

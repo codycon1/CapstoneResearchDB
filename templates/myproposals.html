@@ -7,14 +7,14 @@
     <h5>Pending</h5>
     <hr/>
     {% for item in pending %}
-        <h6>{{ item.title }}</h6>
-        <p>{{ item.description }} </p>
+        <h6>{{ item.projectTitle }}</h6>
+        <p>{{ item.projectAuthor }} </p>
     {% endfor %}
 
     <h5>Accepted</h5>
     <hr/>
     {% for item in accepted %}
-        <h6>{{ item.title }}</h6>
-        <p>{{ item.description }} </p>
+        <h6>{{ item.projectTitle }}</h6>
+        <p>{{ item.projectAuthor }} </p>
     {% endfor %}
 {% endblock %}

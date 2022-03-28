@@ -30,6 +30,7 @@ urlpatterns = [
                   path('upload/', views.saveFileUpload, name='saveFileUpload'),
                   path('saved/', views.saveFileUpload, name="saved"),
                   path('SearchResults/', SearchRequest, name="SearchRequest"),
-                  path('processproposal', views.approveProposal),
+                  path('submissions/', views.viewSubmissions, name="submissions"),
+                  path('changeApproval/', views.approveProposal, name="changeApproval"),
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

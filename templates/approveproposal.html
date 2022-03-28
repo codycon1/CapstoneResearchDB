@@ -6,8 +6,8 @@
     {% for item in pending %}
         <form method="post">
             {% csrf_token %}
-            <h4>{{ item.title }}</h4>
-            <h5>{{ item.description }}</h5>
+            <h4>{{ item.projectTitle }}</h4>
+            <h5>{{ item.projectAuthor }}</h5>
             <input type="hidden" name="id" value="{{ item.id }}">
             <input type="submit" class="btn btn-secondary" name="approve" value="Approve">
             <input type="submit" class="btn btn-secondary" name="delete" value="Delete">

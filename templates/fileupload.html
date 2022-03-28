@@ -1,61 +1,17 @@
-<html>
-    <body>
+{%  extends 'base.html' %}
+{% block content %}
+<body>
+<h1>Upload a Proposal</h1>
+<p>Fill in all information of a project right here</p>
     <div class="row">
     <div class="col-md-6 col-xs-12">
     <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
+
         {{ form.as_p}}
         <button type="submit" class="btn btn-success">submit</button>
     </form>
-        {% if project_info %}
-            <p>{{ project_info.projectTitle}}</p>
-            <p>{{ project_info.projectAuthor }}</p>
-            <p><a download="{{ project_info.file.url }}">View Here!</a></p>
-    {% endif %}
     </div>
 </div>
-<!---<form name = "form" enctype = "multipart/form-data"
-         action = "url saved" method = "POST" > csrf
-   <div style = "max-width:470px;">
-            <div style="text-align: center;">
-                <label>
-                    <input type = "text" style = "margin-left:20%;"
-                    placeholder = "Author of project" name = "projectAuthor" />
-                </label>
-            </div>
-         </div>
-      <div style = "max-width:470px;">
-            <div style="text-align: center;">
-                <label>
-                    <input type = "text" style = "margin-left:20%;"
-                    placeholder = "Title of project" name = "projectTitle" />
-                </label>
-            </div>
-         </div>
-      <div style = "max-width:470px;">
-            <div style="text-align: center;">
-                <label>
-                    <input type = "text" style = "margin-left:20%;"
-                    placeholder = "Project date" name = "date" />
-                </label>
-            </div>
-         </div>
-   <div style = "max-width:470px;">
-            <div style="text-align: center;">
-                <label>
-                    <input type = "file" style = "margin-left:20%;"
-                    placeholder = "Project file" name = "file" />
-                </label>
-            </div>
-         </div>
-       <div style = "max-width:470px;">
-            <div style="text-align: center;">
-               <button style = ";background-color:#4285F4; margin-top:8%;
-                  height:35px; width:80%; margin-left:19%;" type ="submit" value ="Upload" >
-                  <strong>Upload</strong>
-               </button>
-            </div>
-         </div>
-</form>--->
-    </body>
-</html>
+</body>
+{%  endblock %}
