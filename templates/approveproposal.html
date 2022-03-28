@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Pending proposals</h2>
+    {% for item in pending %}
+        <form method="post">
+            {% csrf_token %}
+            <h4>{{ item.title }}</h4>
+            <h5>{{ item.description }}</h5>
+            <input type="hidden" name="id" value="{{ item.id }}">
+            <input type="submit" class="btn btn-secondary" name="approve" value="Approve">
+            <input type="submit" class="btn btn-secondary" name="delete" value="Delete">
+        </form>
+    {% endfor %}
+{% endblock %}

@@ -29,6 +29,7 @@ urlpatterns = [
                   path('Search/', TemplateView.as_view(template_name='SearchPage.html')),
                   path('upload/', views.saveFileUpload, name='saveFileUpload'),
                   path('saved/', views.saveFileUpload, name="saved"),
-                  path('SearchResults/', SearchRequest, name="SearchRequest")
+                  path('SearchResults/', SearchRequest, name="SearchRequest"),
+                  path('processproposal', views.approveProposal),
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

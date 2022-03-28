@@ -15,7 +15,7 @@
 </head>
 
 <body>
-<nav class="navbar navbar-light navbar-expand bg-light navigation-clean">
+<nav class="navbar navbar-light navbar-expand bg-light navigation-clean fixed-top">
     <div class="container"><a class="navbar-brand" href="/">Western Research Database</a>
         <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1"></button>
 
@@ -26,7 +26,11 @@
 
                 <a class="btn btn-secondary ms-auto" role="button" href="/submit">Submit proposal</a>
                 <a class="btn btn-secondary ms-auto" role="button" href="/mysubmissions">My proposals</a>
-                <a class="btn btn-secondary ms-auto" role="button" href="/admin">Admin</a> {# TODO: Check if staff  #}
+                {% if user.is_staff %}
+                    <a class="btn btn-secondary ms-auto" role="button" href="/admin">Admin</a>
+                    <a class="btn btn-secondary ms-auto" role="button" href="/processproposal">Process proposals</a>
+
+                {% endif %}
             </div>
         {% else %}
             <div class="collapse navbar-collapse" id="navcol-1">
