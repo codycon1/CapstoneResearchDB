@@ -26,7 +26,7 @@ DEBUG = True
 
 AUTH_USER_MODEL = 'users.RUser'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1','localhost']
 
 # Application definition
 
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'home',
     'users',
     'proposal',
@@ -68,11 +69,25 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # 'microsoft_auth.context_processors.microsoft',
             ],
         },
     },
 ]
-
+"""
+AUTHENTICATION_BACKENDS = [
+    'microsoft_auth.backends.MicrosoftAuthenticationBackend',
+    'django.contrib.auth.backends.ModelBackend'
+]
+"""
+"""
+MICROSOFT_AUTH_CLIENT_ID = '71627296-74f8-4af5-8722-27494c050ebb'
+MICROSOFT_AUTH_CLIENT_SECRET = 'qzr7Q~2B1EHx46piMoMko-mmnDJzo2x4dSK9y'
+MICROSOFT_AUTH_TENANT_ID = '0ef6279f-a082-4fe7-b7a4-4791c9ed6d1c'
+MICROSOFT_AUTH_LOGIN_TYPE = 'ma'
+#CLIENT_ID = rgDIoGyY7P6nZkru4RAbA3qdskb3jkRz0QDHCPjH
+#Client-SECRET=yZsVZYOFxz2tjL5yW4RDRoIoZTOrBo6J4ypcJTQYpN8JVzZ8JvCG3uZVabzYlW0bPM4YFqP1rJeGbYTcCdF8Q6cDaMpwgeCZISXwrK6ek8swdrgzeOKvnWpkHhXDFc0P
+"""
 WSGI_APPLICATION = 'capstone.wsgi.application'
 
 # Database

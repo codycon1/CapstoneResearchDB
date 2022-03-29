@@ -29,4 +29,6 @@ urlpatterns = [
                   path('', include(users.urls)),
                   path('', include('django.contrib.auth.urls')),
                   path('', include(home.urls)),
+                  # path('microsoft/', include('microsoft_auth.urls', namespace='microsoft')),
+                  # path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
