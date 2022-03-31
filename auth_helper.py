@@ -26,7 +26,7 @@ def get_msal_app(cache=None):
     # Initialize the MSAL confidential client
     auth_app = msal.ConfidentialClientApplication(
         settings['app_id'],
-        authority=settings['scopes'][2].get('calendars.readwrite authority'),
+        authority=settings['authority'],
         client_credential=settings['app_secret'],
         token_cache=cache)
     return auth_app
@@ -57,8 +57,9 @@ def store_user(request, user):
         request.session['user'] = {
             'is_authenticated': True,
             'name': user['displayName'],
-            'email': user['mail'] if (user['mail'] != None) else user['userPrincipalName'],
-            'timeZone': user['mailboxSettings']['timeZone'] if (user['mailboxSettings']['timeZone'] != None) else 'UTC'
+            'email': user['mail'] if (user['mail'] is not None) else user['userPrincipalName'],
+            'timeZone': user['mailboxSettings']['timeZone'] if (
+                user['mailboxSettings']['timeZone'] is not None) else 'UTC'
         }
     except Exception as e:
         print(e)
@@ -67,15 +68,14 @@ def store_user(request, user):
 def get_token(request):
     cache = load_cache(request)
     auth_app = get_msal_app(cache)
-    accounts = auth_app.get_accounts()
-    if accounts:
-        settings['scopes'][2] = list(settings['scopes'][2].items())
-        result = auth_app.acquire_token_silent(
-            settings['scopes'],
-            account=accounts[0])
-        save_cache(request, cache)
 
-        return result['access_token']
+    # Get the flow saved in session
+    flow = request.session.pop('auth_flow', {})
+
+    result = auth_app.acquire_token_by_auth_code_flow(flow, request.GET)
+    save_cache(request, cache)
+
+    return result
 
 
 def remove_user_and_token(request):

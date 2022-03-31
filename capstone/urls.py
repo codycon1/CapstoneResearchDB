@@ -16,7 +16,6 @@ Including another URLconf
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
-
 import home.urls
 import users.urls
 import proposal.urls
@@ -29,6 +28,4 @@ urlpatterns = [
                   path('', include(users.urls)),
                   path('', include('django.contrib.auth.urls')),
                   path('', include(home.urls)),
-                  # path('microsoft/', include('microsoft_auth.urls', namespace='microsoft')),
-                  # path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -7,15 +7,19 @@ from .forms import *
 from .models import *
 from proposal.models import proposal
 from django.db.models import Q
+from users.views import initialize_context
+from microsoft_authentication.auth.auth_decorators import microsoft_login_required
 
 
 # Create your views here.
 def home(request):
-    return render(request, 'home.html')
+    context = initialize_context(request)
+    return render(request, 'home.html',context)
 
 
 def viewSubmissions(request):
-    context = {}
+    context = initialize_context(request)
+    user = context['user']
     context['accepted'] = Project.objects.filter(approval=True)
     context['pending'] = Project.objects.filter(approval=False)
     return render(request, 'myproposals.html', context)
@@ -32,25 +36,31 @@ def SearchRequest(request):
 
 
 def saveFileUpload(request):
+    context = initialize_context(request)
+    user = context['user']
     form = UploadFileForm()
+    context['form'] = form
     try:
         if request.method == 'POST':
             form = UploadFileForm(request.POST, request.FILES)
             if form.is_valid():
                 form.save()
                 project_info = form.instance()
-                return render(request, 'fileupload.html', {'form': form, 'project_info': project_info})
+                context['form'] = form
+                context['project_info'] = project_info
+                return render(request, 'fileupload.html', context)
             else:
                 form = UploadFileForm()
-            return render(request, 'fileupload.html', {'form': form})
+                context['form'] = form
+            return render(request, 'fileupload.html', context)
     except Exception as identifier:
         print(identifier)
-    return render(request, 'fileupload.html', {'form': form})
+    return render(request, 'fileupload.html', context)
 
 
-@login_required
 def approveProposal(request):
-    context = {}
+    context = initialize_context(request)
+    user = context['user']
     context['pending'] = Project.objects.filter(approval=False)
     if request.method == 'POST':
         id = request.POST.get('id', 0)

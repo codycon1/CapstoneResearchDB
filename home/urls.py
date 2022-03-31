@@ -25,8 +25,8 @@ Including another URLconf
 """
 
 urlpatterns = [
-                  path('', views.home),
-                  path('Search/', TemplateView.as_view(template_name='SearchPage.html')),
+                  path('', views.home, name='home'),
+                  path('Search/', views.SearchRequest, name='Search'),
                   path('upload/', views.saveFileUpload, name='saveFileUpload'),
                   path('saved/', views.saveFileUpload, name="saved"),
                   path('SearchResults/', SearchRequest, name="SearchRequest"),

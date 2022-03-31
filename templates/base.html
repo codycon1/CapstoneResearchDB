@@ -24,7 +24,8 @@
                 <a class="btn btn-primary ms-auto" role="button" href="{%  url 'signout' %}">Sign Out</a>
                 <a class="btn btn-secondary ms-auto" role="button" href="/upload">Submit proposal</a>
                 <a class="btn btn-secondary ms-auto" role="button" href="/submissions">My proposals</a>
-                {% if user.is_staff %}
+                <p class="dropdown-item-text text-muted mb-0">{{ user.email }}</p>
+                <!--{% if user.is_CSSeinors %}-->
                     <a class="btn btn-secondary ms-auto" role="button" href="/admin">Admin</a>
                     <a class="btn btn-secondary ms-auto" role="button" href="/changeApproval">Process proposals</a>
 
@@ -51,5 +52,4 @@
 <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'js/bs-init.js' %}"></script>
 </body>
-
 </html>
