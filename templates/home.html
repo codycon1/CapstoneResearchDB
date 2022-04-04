@@ -10,10 +10,10 @@
                     <h1 class="mb-5">Western Research Database</h1>
                 </div>
                 <div class="col-md-10 col-lg-8 col-xl-7 mx-auto position-relative">
-                     <form name="myform" method="GET" action="{% url 'SearchRequest' %}">
+                    <form name="myform" method="GET" action="{% url 'SearchRequest' %}">
                         <div class="row">
                             {% csrf_token %}
-                                <input type="text" name="search" placeholder="Search" />
+                            <input type="text" name="search" placeholder="Search"/>
                         </div>
                     </form>
                 </div>
@@ -25,26 +25,24 @@
             <div class="row">
                 <div class="col-lg-4">
                     <div class="mx-auto features-icons-item mb-5 mb-lg-0 mb-lg-3">
-                        <div class="d-flex features-icons-icon"><i class="icon-screen-desktop m-auto text-primary"
+                        <div class="d-flex features-icons-icon"><i class="icon-envelope-letter m-auto text-primary"
                                                                    data-bss-hover-animate="pulse"></i></div>
-                        <h3>This theme is neat</h3>
-                        <p class="lead mb-0">This is using a free bootstrap studio theme. Neat.</p>
+                        <h3>Submit your proposal</h3>
                     </div>
                 </div>
                 <div class="col-lg-4">
                     <div class="mx-auto features-icons-item mb-5 mb-lg-0 mb-lg-3">
-                        <div class="d-flex features-icons-icon"><i class="icon-layers m-auto text-primary"
+                        <div class="d-flex features-icons-icon"><i class="icon-cloud-upload m-auto text-primary"
                                                                    data-bss-hover-animate="pulse"></i></div>
-                        <h3>It's deployed in Django</h3>
-                        <p class="lead mb-0">Wow.</p>
+                        <h3>Upload project data</h3>
+                        <p class="lead mb-0">Upon approval</p>
                     </div>
                 </div>
                 <div class="col-lg-4">
                     <div class="mx-auto features-icons-item mb-5 mb-lg-0 mb-lg-3">
-                        <div class="d-flex features-icons-icon"><i class="icon-check m-auto text-primary"
+                        <div class="d-flex features-icons-icon"><i class="icon-chemistry m-auto text-primary"
                                                                    data-bss-hover-animate="pulse"></i></div>
-                        <h3>Bootstrap studio works pretty well</h3>
-                        <p class="lead mb-0">Very cool</p>
+                        <h3>Share your findings</h3>
                     </div>
                 </div>
             </div>
@@ -54,7 +52,7 @@
         <div class="container-fluid p-0">
             <div class="row g-0">
                 <div class="col-lg-6 text-white order-lg-2 showcase-img"
-                     style="background-image:url({% static 'img/bg-showcase-1.jpg' %});"><span></span></div>
+                     style="background-image:url({% static 'img/sc1.jpg' %});"><span></span></div>
                 <div class="col-lg-6 my-auto order-lg-1 showcase-text">
                     <h2>This thing is responsive?</h2>
                     <p class="lead mb-0">That's pretty cool</p>
@@ -62,7 +60,7 @@
             </div>
             <div class="row g-0">
                 <div class="col-lg-6 text-white showcase-img"
-                     style="background-image:url({% static 'img/bg-showcase-2.jpg' %});"><span></span></div>
+                     style="background-image:url({% static 'img/sc2.jpg' %});"><span></span></div>
                 <div class="col-lg-6 my-auto order-lg-1 showcase-text">
                     <h2>Bootstrap allows for it</h2>
                     <p class="lead mb-0">Wow</p>
