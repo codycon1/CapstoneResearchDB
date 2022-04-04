@@ -9,6 +9,7 @@ class SubmitProposalForm(forms.ModelForm):
             'title',
             'description',
         ]
+
     def __str__(self):
         return self.title
 

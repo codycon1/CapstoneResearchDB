@@ -19,6 +19,7 @@ def submit_proposal(request):
 
     return render(request, 'newproposal.html', {'form': form, })
 
+
 def my_submissions(request):
     context = {}
     context['accepted'] = proposal.objects.filter(approval=True)

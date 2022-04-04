@@ -1,10 +1,11 @@
-from django.contrib.auth import authenticate, login
-from django.http import HttpResponseRedirect
+from django.contrib.auth import authenticate, login, logout
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse
 from auth_helper import get_sign_in_flow, get_token, store_user, remove_user_and_token, get_token_from_code
 from graph_helper import *
+from capstone import settings
 from users.forms import NewSignupForm
 
 
@@ -53,9 +54,7 @@ def sign_out(request):
 def callback(request):
     # Make the token request
     result = get_token_from_code(request)
-    print("Inside callback")
     # Get the user's profile
     user = get_user(result['access_token'])
-    # Store user
     store_user(request, user)
     return HttpResponseRedirect(reverse('home'))

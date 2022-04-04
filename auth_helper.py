@@ -2,6 +2,9 @@ import yaml
 import msal
 import os
 import time
+from django.http import HttpResponseForbidden
+from django.contrib.auth.models import Group
+from django.shortcuts import redirect
 
 # Load the oauth_settings.yml file located in your app DIR
 stream = open('oauth_settings.yml', 'r')
@@ -59,7 +62,7 @@ def store_user(request, user):
             'name': user['displayName'],
             'email': user['mail'] if (user['mail'] is not None) else user['userPrincipalName'],
             'timeZone': user['mailboxSettings']['timeZone'] if (
-                user['mailboxSettings']['timeZone'] is not None) else 'UTC'
+                    user['mailboxSettings']['timeZone'] is not None) else 'UTC ',
         }
     except Exception as e:
         print(e)

@@ -13,15 +13,14 @@ from microsoft_authentication.auth.auth_decorators import microsoft_login_requir
 
 # Create your views here.
 def home(request):
-    context = initialize_context(request)
-    return render(request, 'home.html',context)
+    # context = initialize_context(request)
+    return render(request, 'home.html', )
 
 
 def viewSubmissions(request):
-    context = initialize_context(request)
-    user = context['user']
-    context['accepted'] = Project.objects.filter(approval=True)
-    context['pending'] = Project.objects.filter(approval=False)
+    context = {'accepted': Project.objects.filter(approval=True), 'pending': Project.objects.filter(approval=False)}
+    # context = initialize_context(request)
+    # user = context['user']
     return render(request, 'myproposals.html', context)
 
 
@@ -29,39 +28,40 @@ def SearchRequest(request):
     if request.method == 'GET':
         projectName = request.GET.get("search")
         status = Project.objects.filter(
-            Q(projectTitle__icontains=projectName) | Q(projectAuthor__icontains=projectName))
+            Q(projectTitle__icontains=projectName, approval=True) | Q(projectAuthor__icontains=projectName,
+                                                                      approval=True))
         return render(request, "SearchResults.html", {"projects": status})
     else:
         return render(request, "SearchResults.html", {})
 
 
 def saveFileUpload(request):
-    context = initialize_context(request)
-    user = context['user']
+    # context = initialize_context(request)
+    # user = context['user']
+    context = {}
     form = UploadFileForm()
-    context['form'] = form
     try:
         if request.method == 'POST':
             form = UploadFileForm(request.POST, request.FILES)
             if form.is_valid():
                 form.save()
                 project_info = form.instance()
-                context['form'] = form
-                context['project_info'] = project_info
-                return render(request, 'fileupload.html', context)
+                # context['form'] = form
+                # context['project_info'] = project_info
+                return render(request, 'fileupload.html', {'form': form, 'project_info': project_info})
             else:
                 form = UploadFileForm()
-                context['form'] = form
-            return render(request, 'fileupload.html', context)
+                # context['form'] = form
+            return render(request, 'fileupload.html', {'form': form})
     except Exception as identifier:
         print(identifier)
-    return render(request, 'fileupload.html', context)
+    return render(request, 'fileupload.html', {'form': form})
 
 
 def approveProposal(request):
-    context = initialize_context(request)
-    user = context['user']
-    context['pending'] = Project.objects.filter(approval=False)
+    context = {'pending': Project.objects.filter(approval=False)}
+    # context = initialize_context(request)
+    # user = context['user']
     if request.method == 'POST':
         id = request.POST.get('id', 0)
         proposalObject = Project.objects.get(id=request.POST['id'])
