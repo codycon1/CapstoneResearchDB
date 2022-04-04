@@ -23,11 +23,13 @@
                     <a class="btn btn-primary ms-auto" role="button" href="/logout">Sign Out</a>
                     <a class="btn btn-secondary ms-auto" role="button" href="/admin">Admin</a>
                     <a class="btn btn-secondary ms-auto" role="button" href="/changeApproval">Process proposals</a>
+                    <p>{{ user.email }}</p>
                     {% else %}
                     <div class="collapse navbar-collapse" id="navcol-1">
                 <a class="btn btn-primary ms-auto" role="button" href="/logout">Sign Out</a>
                 <a class="btn btn-secondary ms-auto" role="button" href="/upload">Submit proposal</a>
                 <a class="btn btn-secondary ms-auto" role="button" href="/submissions">My proposals</a>
+                    <p>{{ user.email }}</p>
                 {% endif %}
             </div>
         {% else %}
