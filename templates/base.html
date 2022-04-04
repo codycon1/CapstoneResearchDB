@@ -18,27 +18,43 @@
     <div class="container"><a class="navbar-brand" href="/">Western Research Database</a>
         <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1"></button>
 
-        {% if user.is_authenticated %}
-            {% if user.is_staff %}
-                <a class="btn btn-primary ms-auto" role="button" href="/logout">Sign Out</a>
-                <a class="btn btn-secondary ms-auto" role="button" href="/admin">Admin</a>
-                <a class="btn btn-secondary ms-auto" role="button" href="/changeApproval">Process proposals</a>
-            {% else %}
-                <div class="collapse navbar-collapse" id="navcol-1">
-                <a class="btn btn-primary ms-auto" role="button" href="/logout">Sign Out</a>
-                <a class="btn btn-secondary ms-auto" role="button" href="/upload">Submit proposal</a>
-                <a class="btn btn-secondary ms-auto" role="button" href="/submissions">My proposals</a>
-            {% endif %}
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                {% if user.is_authenticated %}
+                    {% if user.is_staff %}
+                        <li class="nav-item">
+                            <a class="nav-link" role="button" href="/logout">Sign Out</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" role="button" href="/admin">Admin</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" role="button" href="/changeApproval">Process
+                                proposals</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" role="button" href="/logout">Sign Out</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" role="button" href="/upload">Submit proposal</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" role="button" href="/submissions">My proposals</a>
+                        </li>
+                    {% endif %}
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" role="button"
+                           href="/login">Sign In</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" role="button"
+                           href="/signup">Sign Up</a>
+                    </li>
+                {% endif %}
+            </ul>
         </div>
-        {% else %}
-            <div class="collapse navbar-collapse" id="navcol-1">
-                <a class="btn btn-primary ml-auto ms-3" role="button"
-                   href="/login">Sign In</a>
-                <a class="btn btn-secondary ml-auto ms-3" role="button"
-                   href="/signup">Sign Up</a>
-            </div>
-        {% endif %}
-
     </div>
 </nav>
 
