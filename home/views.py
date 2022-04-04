@@ -39,7 +39,7 @@ def SearchRequest(request):
 def saveFileUpload(request):
     context = initialize_context(request)
     authorName = context['user']['name']
-    form = UploadFileForm(initial={'projectAuthor':authorName})
+    form = UploadFileForm(initial={'projectAuthor': authorName})
     try:
         if request.method == 'POST':
             print(authorName)
