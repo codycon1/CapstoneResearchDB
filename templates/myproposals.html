@@ -1,19 +1,21 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h4>My Proposals</h4>
-    <hr/>
+    <div id="container">
+        <h4>My Proposals</h4>
+        <hr/>
 
-    <h5>Pending</h5>
-    <hr/>
-    {% for item in pending %}
-        <h6>{{ item.projectTitle }}</h6>
-        <p>{{ item.projectAuthor }} </p>
-    {% endfor %}
+        <h5>Pending</h5>
+        <hr/>
+        {% for item in pending %}
+            <h6>{{ item.projectTitle }}</h6>
+            <p>{{ item.projectAuthor }} </p>
+        {% endfor %}
 
-    <h5>Accepted</h5>
-    <hr/>
-    {% for item in accepted %}
-        <h6>{{ item.projectTitle }}</h6>
-        <p>{{ item.projectAuthor }} </p>
-    {% endfor %}
+        <h5>Accepted</h5>
+        <hr/>
+        {% for item in accepted %}
+            <h6>{{ item.projectTitle }}</h6>
+            <p>{{ item.projectAuthor }} </p>
+        {% endfor %}
+    </div>
 {% endblock %}

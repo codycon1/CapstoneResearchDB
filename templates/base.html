@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
 </head>
 <body>
-<nav class="navbar navbar-light navbar-expand bg-light navigation-clean fixed-top">
+<nav class="navbar navbar-light navbar-expand bg-light navigation-clean">
     <div class="container"><a class="navbar-brand" href="/">Western Research Database</a>
         <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1"></button>
 
@@ -42,6 +42,9 @@
                     {% endif %}
                     <li class="nav-item">
                         <a class="nav-link" href="/logout">Sign Out</a>
+                    </li>
+                    <li class="nav-item">
+                        <small class="nav-link">{{ user.email }}</small>
                     </li>
                 {% else %}
                     <li class="nav-item">
