@@ -32,7 +32,7 @@ class StandardUserManager(BaseUserManager):
 
         return self._create_user(email, password, **extra_fields)
 
-
+"""
 class RUser(AbstractUser):
     username = None
     email = models.EmailField(_('email address'), unique=True)
@@ -44,3 +44,4 @@ class RUser(AbstractUser):
 
     def __str__(self):
         return self.email
+        """

@@ -26,14 +26,16 @@ def viewSubmissions(request):
 
 
 def SearchRequest(request):
+    context = initialize_context(request)
+    user = context['user']
     if request.method == 'GET':
         projectName = request.GET.get("search")
         status = Project.objects.filter(
             Q(projectTitle__icontains=projectName, approval=True) | Q(projectAuthor__icontains=projectName,
                                                                       approval=True))
-        return render(request, "SearchResults.html", {"projects": status})
+        return render(request, "SearchResults.html", {"projects": status, 'user': user})
     else:
-        return render(request, "SearchResults.html", {})
+        return render(request, "SearchResults.html", {'user': user})
 
 
 def saveFileUpload(request):

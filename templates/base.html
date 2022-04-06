@@ -23,7 +23,7 @@
                 {% if user.is_authenticated %}
                     {% if user.is_staff %}
                         <li class="nav-item">
-                            <a class="nav-link" role="button" href="{% url 'logout' %}">Sign Out</a>
+                            <a class="nav-link" role="button" href="{% url 'signout' %}">Sign Out</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" role="button" href="/admin">Admin</a>
@@ -35,7 +35,7 @@
                         <p>{{ user.email }}</p>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" role="button" href="{%  url 'logout' %}">Sign Out</a>
+                            <a class="nav-link" role="button" href="{%  url 'signout' %}">Sign Out</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" role="button" href="/upload">Submit proposal</a>
@@ -49,10 +49,6 @@
                     <li class="nav-item">
                         <a class="nav-link" role="button"
                            href="{% url 'signin' %}">Sign In</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" role="button"
-                           href="/signup">Sign Up</a>
                     </li>
                 {% endif %}
             </ul>

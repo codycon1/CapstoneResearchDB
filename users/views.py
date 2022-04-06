@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import redirect
@@ -6,10 +8,9 @@ from django.urls import reverse
 from auth_helper import get_sign_in_flow, get_token, store_user, remove_user_and_token, get_token_from_code
 from graph_helper import *
 from capstone import settings
-from users.forms import NewSignupForm
-
 
 # Create your views here.
+""""
 def user_signup(request):
     if request.method == 'POST':
         form = NewSignupForm(request.POST)
@@ -23,6 +24,7 @@ def user_signup(request):
     else:
         form = NewSignupForm()
     return render(request, 'registration/signup.html', {'form': form})
+"""
 
 
 def initialize_context(request):
@@ -51,10 +53,18 @@ def sign_out(request):
     return HttpResponseRedirect(reverse('home'))
 
 
+def checkStaff(x):
+    for i in x['value']:
+        if i == '2c58e05f-8a92-44fc-90e6-1ef89fb96ad3':
+            return True
+    return False
+
+
 def callback(request):
     # Make the token request
     result = get_token_from_code(request)
-    # Get the user's profile
     user = get_user(result['access_token'])
-    store_user(request, user)
+    isStaff = checkStaff(get_groups(result['access_token']))
+    print(isStaff)
+    store_user(request, user, isStaff)
     return HttpResponseRedirect(reverse('home'))

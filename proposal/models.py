@@ -9,7 +9,7 @@ sys.path.insert(0, '~/PycharmProjects/capstone/users')
 
 
 class proposal(models.Model):
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    author = models.CharField(max_length=50)
     title = models.CharField(max_length=128, blank=False)
     description = models.CharField(max_length=256, blank=False)  # TODO: Temporary: Replace with file upload
     approval = models.BooleanField(default=False)

@@ -55,10 +55,11 @@ def get_token_from_code(request):
     return result
 
 
-def store_user(request, user):
+def store_user(request, user, isStaff):
     try:
         request.session['user'] = {
             'is_authenticated': True,
+            'is_staff': isStaff,
             'name': user['displayName'],
             'email': user['mail'] if (user['mail'] is not None) else user['userPrincipalName'],
             'timeZone': user['mailboxSettings']['timeZone'] if (

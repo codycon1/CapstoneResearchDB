@@ -1,7 +1,7 @@
 import django.contrib.auth.admin
 from django.contrib import admin
 
-from users.models import RUser
+# from users.models import RUser
 
 
 class UserAdmin(django.contrib.auth.admin.UserAdmin):
