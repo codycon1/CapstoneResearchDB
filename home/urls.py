@@ -31,4 +31,5 @@ urlpatterns = [
                   path('SearchResults/', SearchRequest, name="SearchRequest"),
                   path('submissions/', views.viewSubmissions, name="submissions"),
                   path('changeApproval/', views.approveProposal, name="changeApproval"),
+                  path('Unauthorized/',views.unauthorized,name="unauthorized")
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
