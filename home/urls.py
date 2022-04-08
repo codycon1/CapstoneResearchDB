@@ -23,7 +23,6 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-
 urlpatterns = [
                   path('', views.home, name='home'),
                   path('Search/', views.SearchRequest, name='Search'),
@@ -32,5 +31,4 @@ urlpatterns = [
                   path('SearchResults/', SearchRequest, name="SearchRequest"),
                   path('submissions/', views.viewSubmissions, name="submissions"),
                   path('changeApproval/', views.approveProposal, name="changeApproval"),
-
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

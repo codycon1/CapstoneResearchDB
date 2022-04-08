@@ -20,11 +20,12 @@ import home.urls
 import users.urls
 import proposal.urls
 from django.conf import settings
+
 urlpatterns = [
                   path('admin/', admin.site.urls),
                   path('', include(home.urls)),
-                  path('', include(proposal.urls)),
                   path('', include(users.urls)),
+                  path('', include(proposal.urls)),
                   path('', include('django.contrib.auth.urls')),
                   path('', include(home.urls)),
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

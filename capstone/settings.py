@@ -21,9 +21,9 @@ SECRET_KEY = 'django-insecure-r4b$s#dm4si$@ufv+w65o9kip=t#2v5g$k7dqfx!kw(n$+51$0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# AUTH_USER_MODEL = 'users.RUser'
+AUTH_USER_MODEL = 'users.RUser'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost','127.0.0.1']
 
 # Application definition
 
@@ -34,22 +34,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'proposal',
     'home',
     'users',
-    'proposal',
     'microsoft_authentication'
 
 ]
 MEDIA_ROOT = os.path.join(BASE_DIR, 'projects')
 MEDIA_URL = 'projects/'
-MICROSOFT = {
-    "app_id": "9a006e24-228d-4c03-a60e-c99f63a6bc0b",
-    "app_secret": "6o57Q~sPGYPcI_waTod5W86~ZbqdNZr0lZrzP",
-    "redirect": "http://localhost:8000/microsoft_authentication/callback",
-    "scopes": ["user.read"],
-    "authority": "https://login.microsoftonline.com/0ef6279f-a082-4fe7-b7a4-4791c9ed6d1c",  # or using tenant "https://login.microsoftonline.com/{tenant}",
-    "logout_uri": "http://localhost:8000/"
-}
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

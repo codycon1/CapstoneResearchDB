@@ -4,7 +4,7 @@ import os
 import time
 from django.http import HttpResponseForbidden
 from django.contrib.auth.models import Group
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 
 # Load the oauth_settings.yml file located in your app DIR
 stream = open('oauth_settings.yml', 'r')

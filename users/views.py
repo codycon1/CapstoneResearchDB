@@ -65,6 +65,5 @@ def callback(request):
     result = get_token_from_code(request)
     user = get_user(result['access_token'])
     isStaff = checkStaff(get_groups(result['access_token']))
-    print(isStaff)
     store_user(request, user, isStaff)
     return HttpResponseRedirect(reverse('home'))
