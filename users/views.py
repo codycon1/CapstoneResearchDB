@@ -53,9 +53,10 @@ def sign_out(request):
     return HttpResponseRedirect(reverse('home'))
 
 
+# 2c58e05f-8a92-44fc-90e6-1ef89fb96ad3
 def checkStaff(x):
     for i in x['value']:
-        if i == '2c58e05f-8a92-44fc-90e6-1ef89fb96ad3':
+        if i == '5f0a4be8-970a-47c2-b074-e3945d20e88f':
             return True
     return False
 

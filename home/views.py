@@ -8,6 +8,7 @@ from .models import *
 from django.db.models import Q
 from users.views import initialize_context
 from django.core.exceptions import PermissionDenied
+from datetime import date
 
 
 # Create your views here.
@@ -17,14 +18,11 @@ def home(request):
 
 
 def viewSubmissions(request):
-    try:
-        userInfo = request.session
-        context = {'accepted': Project.objects.filter(approval=True, projectAuthor=userInfo['user']['name']),
-                   'pending': Project.objects.filter(approval=False, projectAuthor=userInfo['user']['name']),
-                   'user': userInfo['user']}
-        return render(request, 'myproposals.html', context)
-    except:
-        return render(request, 'UnauthorizedPage.html')
+    userInfo = request.session
+    context = {'accepted': Project.objects.filter(approval=True, projectAuthor=userInfo['user']['name']),
+               'pending': Project.objects.filter(approval=False, projectAuthor=userInfo['user']['name']),
+               'user': userInfo['user']}
+    return render(request, 'myproposals.html', context)
 
 
 def SearchRequest(request):
@@ -44,7 +42,7 @@ def saveFileUpload(request):
     try:
         context = request.session
         authorName = context['user']['name']
-        form = UploadFileForm(initial={'projectAuthor': authorName})
+        form = UploadFileForm(initial={'projectAuthor': authorName, 'date': date.today()})
         try:
             if request.method == 'POST':
                 form = UploadFileForm(request.POST, request.FILES)
