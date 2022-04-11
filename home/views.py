@@ -18,11 +18,14 @@ def home(request):
 
 
 def viewSubmissions(request):
-    userInfo = request.session
-    context = {'accepted': Project.objects.filter(approval=True, projectAuthor=userInfo['user']['name']),
-               'pending': Project.objects.filter(approval=False, projectAuthor=userInfo['user']['name']),
-               'user': userInfo['user']}
-    return render(request, 'myproposals.html', context)
+    try:
+        userInfo = request.session
+        context = {'accepted': Project.objects.filter(approval=True, projectAuthor=userInfo['user']['name']),
+                   'pending': Project.objects.filter(approval=False, projectAuthor=userInfo['user']['name']),
+                   'user': userInfo['user']}
+        return render(request, 'myproposals.html', context)
+    except:
+        return render(request, 'UnauthorizedPage.html')
 
 
 def SearchRequest(request):

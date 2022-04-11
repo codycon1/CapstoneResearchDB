@@ -52,11 +52,11 @@ def sign_out(request):
     remove_user_and_token(request)
     return HttpResponseRedirect(reverse('home'))
 
-
-# 2c58e05f-8a92-44fc-90e6-1ef89fb96ad3
+# 5f0a4be8-970a-47c2-b074-e3945d20e88f
+# 2c58e05f-8a92-44fc-90e6-1ef89fb96ad3-- Staff
 def checkStaff(x):
     for i in x['value']:
-        if i == '5f0a4be8-970a-47c2-b074-e3945d20e88f':
+        if i == '2c58e05f-8a92-44fc-90e6-1ef89fb96ad3':
             return True
     return False
 

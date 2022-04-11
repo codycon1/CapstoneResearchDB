@@ -13,7 +13,7 @@ class editProjectForm(forms.ModelForm):
 class UploadFileForm(forms.ModelForm):
     class Meta:
         model = Project
-        fields = ('projectAuthor', 'projectTitle','date', 'file', 'dataFiles', 'resultFiles')
+        fields = ('projectAuthor', 'projectTitle', 'date', 'file', 'dataFiles', 'resultFiles')
 
 
 class SignupForm(UserCreationForm):

@@ -2,19 +2,20 @@
 {% load static %}
 {% block content %}
     <header class="text-center text-white masthead"
-            style="background:url({% static 'img/bg-masthead.png' %})no-repeat center center;background-size:cover;">
+            style="background:url({% static 'img/bg-masthead2.jpg' %})no-repeat center center;background-size:cover;">
         <div class="overlay"></div>
         <div class="container">
             <div class="row">
-                <div class="col-xl-9 mx-auto position-relative">
-                    <h1 class="mb-5">Western Research Database</h1>
+                <div class="container py-3 py-md-5">
+                    <h2 class="mb-5">Thorton Biology Program Research Database</h2>
                 </div>
                 <div class="col-md-10 col-lg-8 col-xl-7 mx-auto position-relative">
                     <form name="myform" method="GET" action="{% url 'SearchRequest' %}">
                         <div class="row">
                             {% csrf_token %}
-                            <input type="text" name="search" placeholder="Search"/>
+                            <input type="text" name="search" placeholder="Search by author name or project name"/>
                         </div>
+                        <button type="submit" id="btn btn-primary">Submit</button>
                     </form>
                 </div>
             </div>

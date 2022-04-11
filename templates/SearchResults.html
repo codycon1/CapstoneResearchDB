@@ -6,16 +6,38 @@
 </head>
     <body>
     <h1>Results Found</h1>
-{% if projects %}
-{% for each_project in projects %}
-    <p>{{each_project.projectTitle}}</p>
-    <p>{{each_project.projectAuthor}}</p>
-    <p>{{ each_project.date }}</p>
-    <p><a href = "{{each_project.file.url}}"><button type="button">Project Files</button></a></p>
-    <p><a href="{{ each_project.dataFiles.url }}"><button type="button">Data Files</button></a></p>
-    <p><a href="{{ each_project.resultFiles.url }}"><button type="button">Result Files</button> </a></p>
-    <hr/>
+    <table>
+    <thead>
+        <tr>
+            <th>Title of project</th>
+            <th>Author of project</th>
+            <th>Project date</th>
+            <th>Project Files</th>
+            <th>Data Files</th>
+            <th>Result files</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% if projects %}
+    {% for each_project in projects %}
+        <tr>
+        <td>{{ each_project.projectTitle }}</td>
+        <td>{{ each_project.projectAuthor }}</td>
+        <td>{{ each_project.date }}</td>
+        <td><a href="{{ each_project.file.url }}"><button type="button">Download</button></a></td>
+        <td><a href="{{ each_project.dataFiles.url }}"><button type="button">Download</button></a></td>
+        <td><a href="{{ each_project.resultFiles.url }}"><button type="button">Download</button></a></td>
+        </tr>
+        </tbody>
+    <!--<p></p>
+    <p></p>
+    <p></p>
+    <p><a href = ""><button type="button">Project Files</button></a></p>
+    <p><a href=""><button type="button">Data Files</button></a></p>
+    <p><a href=""><button type="button">Result Files</button> </a></p>
+    <hr/>-->
 {% endfor %}
 {% endif %}
+    </table>
     </body>
 {% endblock %}

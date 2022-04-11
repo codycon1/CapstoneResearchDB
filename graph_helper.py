@@ -13,7 +13,7 @@ def get_groups(token):
 
         },
         json={
-            'securityEnabledOnly': True
+            'securityEnabledOnly': False
         }
     )
     return groups.json()

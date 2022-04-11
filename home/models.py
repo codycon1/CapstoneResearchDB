@@ -3,7 +3,6 @@ from django.db import models
 
 # Create your models here.
 class Project(models.Model):
-
     projectAuthor = models.CharField(max_length=50)
     date = models.DateField()
     projectTitle = models.CharField(max_length=100)
@@ -13,5 +12,5 @@ class Project(models.Model):
     approval = models.BooleanField(default=False)
 
     def __str__(self):
-        self.projectInfo = (self.projectAuthor, self.date, self.projectTitle, self.file)
+        self.projectInfo = (self.projectAuthor, self.date, self.projectTitle)
         return str(self.projectInfo)
