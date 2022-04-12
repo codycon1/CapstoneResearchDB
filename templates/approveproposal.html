@@ -7,8 +7,10 @@
         <form method="post">
             {% csrf_token %}
             <h4>{{ item.projectTitle }}</h4>
-            <h5>{{ item.projectAuthor }}</h5>
-            <!--<h6><a href="{{ item.file }}"><button type="button">Download</button></a></h6>-->
+            <p>{{ item.projectAuthor }}</p>
+            <p><a href="{{ item.file.url }}"><button type="button">Download</button></a></p>
+            <p><a href="{{ item.dataFiles.url }}"><button type="button">Datasets</button></a></p>
+            <p><a href="{{ item.resultFiles.url }}"><button type="button">Results</button></a></p>
             <input type="hidden" name="id" value="{{ item.id }}">
             <input type="submit" class="btn btn-secondary" name="approve" value="Approve">
             <input type="submit" class="btn btn-secondary" name="delete" value="Delete">
