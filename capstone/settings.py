@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'proposal',
     'home',
     'users',
-    'microsoft_authentication'
+    'microsoft_authentication',
+    'django_readonly_field'
 
 ]
 MEDIA_ROOT = os.path.join(BASE_DIR, 'projects')

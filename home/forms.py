@@ -15,6 +15,11 @@ class UploadFileForm(forms.ModelForm):
         model = Project
         fields = ('projectAuthor', 'projectTitle', 'date', 'file', 'dataFiles', 'resultFiles')
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['projectAuthor'].disabled = True
+        self.fields['date'].disabled = True
+
 
 class SignupForm(UserCreationForm):
     first_name = forms.CharField(max_length=32, required=True, help_text='First Name')

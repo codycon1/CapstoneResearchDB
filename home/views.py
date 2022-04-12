@@ -1,14 +1,12 @@
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+import datetime
+
+from pytz import timezone
+from django.db.models import Q
 from django.shortcuts import render, redirect
-from django.core.files.storage import FileSystemStorage
-from django.views.generic import ListView
+
+from users.views import initialize_context
 from .forms import *
 from .models import *
-from django.db.models import Q
-from users.views import initialize_context
-from django.core.exceptions import PermissionDenied
-from datetime import date
 
 
 # Create your views here.
@@ -45,7 +43,7 @@ def saveFileUpload(request):
     try:
         context = request.session
         authorName = context['user']['name']
-        form = UploadFileForm(initial={'projectAuthor': authorName, 'date': date.today()})
+        form = UploadFileForm(initial={'projectAuthor': authorName, 'date':datetime.datetime.now(timezone('US/Mountain'))})
         try:
             if request.method == 'POST':
                 form = UploadFileForm(request.POST, request.FILES)
