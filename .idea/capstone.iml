@@ -19,6 +19,7 @@
     <orderEntry type="jdk" jdkName="Python 3.8 (capstone)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="style" level="application" />
+    <orderEntry type="library" name="animate.css" level="application" />
   </component>
   <component name="PyDocumentationSettings">
     <option name="format" value="PLAIN" />
