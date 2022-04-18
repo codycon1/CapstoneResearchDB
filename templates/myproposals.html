@@ -2,43 +2,80 @@
 {% block content %}
     <div id="container">
         <h1>My Proposals</h1>
-    <table>
-    <thead>
-    <tr>
-        <th>Pending</th>
-        <th>General project files</th>
-        <th>Data Files</th>
-        <th>Result Files</th>
-    </tr>
-    </thead>
-    <tbody>
-        {% for item in pending %}
+        <table>
+            <thead>
             <tr>
-            <td>{{ item.projectTitle }}</td>
-            <td><a href="{{ item.file }}"><button type="button">Download</button></a></td>
-            <td><a href="{{ item.dataFiles }}"><button type="button">Download</button></a></td>
-            <td><a href="{{ item.resultFiles }}"><button type="button">Download</button></a></td>
+                <th>Pending</th>
+                <th>General project files</th>
+                <th>Data Files</th>
+                <th>Result Files</th>
             </tr>
-        {% endfor %}
-    </tbody>
-    <thead>
-    <tr>
-        <th>Accepted</th>
-        <th>General project files</th>
-        <th>Data Files</th>
-        <th>Result Files</th>
-    </tr>
-    </thead>
-    <tbody>
-        {% for item in accepted %}
+            </thead>
+            <tbody>
+            {% for item in pending %}
+                <tr>
+                    <td>{{ item.projectTitle }}</td>
+                    <td><a href="{{ item.file }}">
+                        <button type="button">Download</button>
+                    </a></td>
+                    <td><a href="{{ item.dataFiles }}">
+                        <button type="button">Download</button>
+                    </a></td>
+                    <td><a href="{{ item.resultFiles }}">
+                        <button type="button">Download</button>
+                    </a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <thead>
             <tr>
-            <td>{{ item.projectTitle }}</td>
-            <td><a href="{{ item.file }}"><button type="button">Download</button></a></td>
-            <td><a href="{{ item.dataFiles }}"><button type="button">Download</button></a></td>
-            <td><a href="{{ item.resultFiles }}"><button type="button">Download</button></a></td>
+                <th>Accepted</th>
+                <th>General project files</th>
+                <th>Data Files</th>
+                <th>Result Files</th>
             </tr>
-        {% endfor %}
-    </tbody>
-    </table>
+            </thead>
+            <tbody>
+            {% for item in accepted %}
+                <tr>
+                    <td>{{ item.projectTitle }}</td>
+                    <td><a href="{{ item.file }}">
+                        <button type="button">Download</button>
+                    </a></td>
+                    <td><a href="{{ item.dataFiles }}">
+                        <button type="button">Download</button>
+                    </a></td>
+                    <td><a href="{{ item.resultFiles }}">
+                        <button type="button">Download</button>
+                    </a></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="type" value="general">
+                            <input type="submit" name="Upload" value="Upload">
+                        </form>
+                    </td>
+                    <td>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="type" value="general">
+                            <input type="submit" name="Upload" value="Upload">
+                        </form>
+                    </td>
+                    <td>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="type" value="general">
+                            <input type="submit" name="Upload" value="Upload">
+                        </form>
+                    </td>
+{#                TODO: Hook up these buttons#}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
 {% endblock %}
