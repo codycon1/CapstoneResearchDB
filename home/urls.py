@@ -26,10 +26,10 @@ Including another URLconf
 urlpatterns = [
                   path('', views.home, name='home'),
                   path('Search/', views.SearchRequest, name='Search'),
-                  path('upload/', views.saveFileUpload, name='saveFileUpload'),
+                  path('submit/', views.saveFileUpload, name='saveFileUpload'),
                   path('saved/', views.saveFileUpload, name="saved"),
                   path('SearchResults/', SearchRequest, name="SearchRequest"),
                   path('submissions/', views.viewSubmissions, name="submissions"),
                   path('changeApproval/', views.approveProposal, name="changeApproval"),
-                  path('Unauthorized/',views.unauthorized,name="unauthorized")
+                  path('Unauthorized/', views.unauthorized, name="unauthorized"),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

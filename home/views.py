@@ -15,15 +15,30 @@ def home(request):
     return render(request, 'home.html', context)
 
 
+# def submit_proposal(request):
+#     context = initialize_context(request)
+#     user = request.session
+#     if request.method == 'POST':
+#         form = SubmitProposalForm(request.POST)
+#         if form.is_valid():
+#             p = form.save(commit=False)
+#             p.author = user['user']['name']
+#             p.email = user['user']['email']
+#             p.save()
+#             return redirect('/')
+#     else:
+#         form = SubmitProposalForm()
+#
+#     context['form'] = form
+#     return render(request, 'newproposal.html', context)
+
+
 def viewSubmissions(request):
-    try:
-        userInfo = request.session
-        context = {'accepted': Project.objects.filter(approval=True, projectAuthor=userInfo['user']['name']),
-                   'pending': Project.objects.filter(approval=False, projectAuthor=userInfo['user']['name']),
-                   'user': userInfo['user']}
-        return render(request, 'myproposals.html', context)
-    except:
-        return render(request, 'UnauthorizedPage.html')
+    userInfo = request.session
+    context = {'accepted': Project.objects.filter(approval=True, email=userInfo['user']['email']),
+               'pending': Project.objects.filter(approval=False, email=userInfo['user']['email']),
+               'user': userInfo['user']}
+    return render(request, 'myproposals.html', context)
 
 
 def SearchRequest(request):
@@ -43,16 +58,22 @@ def saveFileUpload(request):
     try:
         context = request.session
         authorName = context['user']['name']
-        form = UploadFileForm(initial={'projectAuthor': authorName, 'date':datetime.datetime.now(timezone('US/Mountain'))})
+        authorEmail = context['user']['email']
+        form = UploadFileForm(
+            initial={'projectAuthor': authorName, 'email': authorEmail})
         try:
             if request.method == 'POST':
                 form = UploadFileForm(request.POST, request.FILES)
                 if form.is_valid():
-                    form.save()
+                    projdata = form.save(commit=False)
+                    projdata.email = request.session['user']['email']
+                    projdata.projectAuthor = request.session['user']['name']
+                    projdata.save()
                     project_info = form.instance()
                     return render(request, 'fileupload.html',
                                   {'form': form, 'project_info': project_info, 'user': context['user']})
                 else:
+                    print(form.errors)
                     form = UploadFileForm()
                 return render(request, 'fileupload.html', {'form': form, 'user': context['user']})
         except Exception as identifier:

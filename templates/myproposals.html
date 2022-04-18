@@ -16,6 +16,11 @@
         {% for item in accepted %}
             <h6>{{ item.projectTitle }}</h6>
             <p>{{ item.projectAuthor }} </p>
+            <p>Add a file {{ item.projectID }}</p>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="projectID" value="{{ item.projectID }}">
+            </form>
         {% endfor %}
     </div>
 {% endblock %}

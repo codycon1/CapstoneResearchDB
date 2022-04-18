@@ -1,9 +1,9 @@
 import django.contrib.auth.admin
 from django.contrib import admin
 
-# from users.models import RUser
+from users.models import RUser
 
-
+@admin.register(RUser)
 class UserAdmin(django.contrib.auth.admin.UserAdmin):
     fieldsets = (
         (None, {'fields': (

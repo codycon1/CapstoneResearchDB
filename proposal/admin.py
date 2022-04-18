@@ -4,8 +4,5 @@ from django.contrib import admin
 from django.contrib import admin
 from proposal import models
 
-@admin.register(models.proposal)
-class ProposalAdmin(admin.ModelAdmin):
-    pass
 
 
