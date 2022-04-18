@@ -4140,7 +4140,7 @@ textarea.form-control-lg {
     display: block
 }
 
-.navbar {
+/*.navbar {
     position: relative;
     display: flex;
     flex-wrap: wrap;
@@ -4148,7 +4148,7 @@ textarea.form-control-lg {
     justify-content: space-between;
     padding-top: .5rem;
     padding-bottom: .5rem;
-}
+}*/
 
 .navbar > .container, .navbar > .container-fluid, .navbar > .container-sm, .navbar > .container-md, .navbar > .container-lg, .navbar > .container-xl, .navbar > .container-xxl {
     display: flex;
@@ -11669,7 +11669,9 @@ body {
     font-size: 20px;
     line-height: 30px
 }
+uploadButton{
 
+}
 h1{
     font-family: Lato;
     color: White;

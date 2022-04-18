@@ -1,26 +1,44 @@
 {% extends 'base.html' %}
 {% block content %}
     <div id="container">
-        <h4>My Proposals</h4>
-        <hr/>
-
-        <h5>Pending</h5>
-        <hr/>
+        <h1>My Proposals</h1>
+    <table>
+    <thead>
+    <tr>
+        <th>Pending</th>
+        <th>General project files</th>
+        <th>Data Files</th>
+        <th>Result Files</th>
+    </tr>
+    </thead>
+    <tbody>
         {% for item in pending %}
-            <h6>{{ item.projectTitle }}</h6>
-            <p>{{ item.projectAuthor }} </p>
+            <tr>
+            <td>{{ item.projectTitle }}</td>
+            <td><a href="{{ item.file }}"><button type="button">Download</button></a></td>
+            <td><a href="{{ item.dataFiles }}"><button type="button">Download</button></a></td>
+            <td><a href="{{ item.resultFiles }}"><button type="button">Download</button></a></td>
+            </tr>
         {% endfor %}
-
-        <h5>Accepted</h5>
-        <hr/>
+    </tbody>
+    <thead>
+    <tr>
+        <th>Accepted</th>
+        <th>General project files</th>
+        <th>Data Files</th>
+        <th>Result Files</th>
+    </tr>
+    </thead>
+    <tbody>
         {% for item in accepted %}
-            <h6>{{ item.projectTitle }}</h6>
-            <p>{{ item.projectAuthor }} </p>
-            <p>Add a file {{ item.projectID }}</p>
-            <form method="post">
-                {% csrf_token %}
-                <input type="hidden" name="projectID" value="{{ item.projectID }}">
-            </form>
+            <tr>
+            <td>{{ item.projectTitle }}</td>
+            <td><a href="{{ item.file }}"><button type="button">Download</button></a></td>
+            <td><a href="{{ item.dataFiles }}"><button type="button">Download</button></a></td>
+            <td><a href="{{ item.resultFiles }}"><button type="button">Download</button></a></td>
+            </tr>
         {% endfor %}
+    </tbody>
+    </table>
     </div>
 {% endblock %}
