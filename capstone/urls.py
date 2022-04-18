@@ -19,13 +19,11 @@ from django.urls import path, include
 import home.urls
 import home.views
 import users.urls
-import proposal.urls
 from django.conf import settings
 
 urlpatterns = [
                   path('', include(home.urls)),
                   path('', include(users.urls)),
-                  path('', include(proposal.urls)),
                   path('', include('django.contrib.auth.urls')),
                   path('', include(home.urls)),
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

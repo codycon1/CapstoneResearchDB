@@ -35,10 +35,16 @@ def home(request):
 
 def viewSubmissions(request):
     userInfo = request.session
+
+    #TODO: Process additional file upload here
+    # if request.method == 'POST':
+    #     if request.POST.get('')
+
     context = {'accepted': Project.objects.filter(approval=True, email=userInfo['user']['email']),
                'pending': Project.objects.filter(approval=False, email=userInfo['user']['email']),
                'user': userInfo['user']}
     return render(request, 'myproposals.html', context)
+
 
 
 def SearchRequest(request):

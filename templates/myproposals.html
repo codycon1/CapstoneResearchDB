@@ -55,24 +55,30 @@
                         <form method="post">
                             {% csrf_token %}
                             <input type="hidden" name="type" value="general">
+                            <input type="hidden" name="id" value="{{ item.id }}">
+                            <input type="file" name="file"><br>
                             <input type="submit" name="Upload" value="Upload">
                         </form>
                     </td>
                     <td>
                         <form method="post">
                             {% csrf_token %}
-                            <input type="hidden" name="type" value="general">
+                            <input type="hidden" name="type" value="data">
+                            <input type="hidden" name="id" value="{{ item.id }}">
+                            <input type="file" name="file"><br>
                             <input type="submit" name="Upload" value="Upload">
                         </form>
                     </td>
                     <td>
                         <form method="post">
                             {% csrf_token %}
-                            <input type="hidden" name="type" value="general">
+                            <input type="hidden" name="type" value="result">
+                            <input type="hidden" name="id" value="{{ item.id }}">
+                            <input type="file" name="file"><br>
                             <input type="submit" name="Upload" value="Upload">
                         </form>
                     </td>
-{#                TODO: Hook up these buttons#}
+                    {#                TODO: Hook up these buttons#}
                 </tr>
             {% endfor %}
             </tbody>
