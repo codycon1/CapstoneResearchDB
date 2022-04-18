@@ -1,19 +1,33 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <br>
-    <h4>Pending proposals</h4>
+    <h1>Pending proposals</h1>
+    <table>
+    <thead>
+        <tr>
+            <th>Project Title</th>
+            <th>Project Author</th>
+            <th>General Project Files</th>
+            <th>Data Files</th>
+            <th>Result Files</th>
+            <th>Approve</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
     {% for item in pending %}
         <form method="post">
             {% csrf_token %}
-            <h4>{{ item.projectTitle }}</h4>
-            <p>{{ item.projectAuthor }}</p>
-            <p><a href="{{ item.file.url }}"><button type="button">Download</button></a></p>
-            <p><a href="{{ item.dataFiles.url }}"><button type="button">Datasets</button></a></p>
-            <p><a href="{{ item.resultFiles.url }}"><button type="button">Results</button></a></p>
+            <td>{{ item.projectTitle }}</td>
+            <td>{{ item.projectAuthor }}</td>
+            <td><a href="{{ item.file }}"><button type="button">Download</button></a></td>
+            <td><a href="{{ item.dataFiles }}"><button type="button">Datasets</button></a></td>
+            <td><a href="{{ item.resultFiles }}"><button type="button">Results</button></a></td>
+            <td><input type="submit" class="btn btn-secondary" name="approve" value="Approve"></td>
+            <td><input type="submit" class="btn btn-secondary" name="delete" value="Delete"></td>
             <input type="hidden" name="id" value="{{ item.id }}">
-            <input type="submit" class="btn btn-secondary" name="approve" value="Approve">
-            <input type="submit" class="btn btn-secondary" name="delete" value="Delete">
         </form>
+        </tbody>
     {% endfor %}
+    </table>
 {% endblock %}
