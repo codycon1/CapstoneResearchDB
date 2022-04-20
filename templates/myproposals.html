@@ -6,6 +6,7 @@
             <thead>
             <tr>
                 <th>Pending</th>
+                <th>Description</th>
                 <th>General project files</th>
                 <th>Data Files</th>
                 <th>Result Files</th>
@@ -15,13 +16,14 @@
             {% for item in pending %}
                 <tr>
                     <td>{{ item.projectTitle }}</td>
-                    <td><a href="{{ item.file }}">
+                    <td>{{ item.projectDescription }}</td>
+                    <td><a href="{{ item.proposalFile.url }}">
                         <button type="button">Download</button>
                     </a></td>
-                    <td><a href="{{ item.dataFiles }}">
+                    <td><a href="{{ item.dataFile.url }}">
                         <button type="button">Download</button>
                     </a></td>
-                    <td><a href="{{ item.resultFiles }}">
+                    <td><a href="{{ item.resultFile.url }}">
                         <button type="button">Download</button>
                     </a></td>
                 </tr>
@@ -30,6 +32,7 @@
             <thead>
             <tr>
                 <th>Accepted</th>
+                <th>Project Description</th>
                 <th>General project files</th>
                 <th>Data Files</th>
                 <th>Result Files</th>
@@ -39,13 +42,14 @@
             {% for item in accepted %}
                 <tr>
                     <td>{{ item.projectTitle }}</td>
-                    <td><a href="{{ item.file }}">
+                    <td>{{ item.projectDescription }}</td>
+                    <td><a href="{{ item.proposalFile.url }}">
                         <button type="button">Download</button>
                     </a></td>
-                    <td><a href="{{ item.dataFiles }}">
+                    <td><a href="{{ item.dataFiles.url }}">
                         <button type="button">Download</button>
                     </a></td>
-                    <td><a href="{{ item.resultFiles }}">
+                    <td><a href="{{ item.resultFiles.url }}">
                         <button type="button">Download</button>
                     </a></td>
                 </tr>
