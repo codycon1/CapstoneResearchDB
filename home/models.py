@@ -10,14 +10,8 @@ class Project(models.Model):
     projectTitle = models.CharField(max_length=100, verbose_name="Project Title")
     projectDescription = models.CharField(max_length=256, verbose_name="Project Description")
     proposalFile = models.FileField(
-        validators=[FileExtensionValidator(allowed_extensions=['pdf', 'doc', 'csv', 'xlsx', 'docx'])],
+        validators=[FileExtensionValidator(allowed_extensions=['pdf', 'doc', 'csv', 'xlsx', 'docx', 'txt'])], # TODO: Remove .txt
         upload_to='projects/proposals', verbose_name="Proposal")
-    dataFile = models.FileField(
-        validators=[FileExtensionValidator(allowed_extensions=['pdf', 'doc', 'csv', 'xlsx', 'docx'])],
-        upload_to='projects/datasets', verbose_name="Data", null=True)
-    resultFile = models.FileField(
-        validators=[FileExtensionValidator(allowed_extensions=['pdf', 'doc', 'csv', 'xlsx', 'docx'])],
-        upload_to='projects/results', verbose_name="Results", null=True)
     approval = models.BooleanField(default=False)
 
     def __str__(self):
@@ -30,6 +24,7 @@ class ProjectFile(models.Model):
     projectID = models.ForeignKey(Project, on_delete=models.CASCADE)
     userEmail = models.EmailField(max_length=256)
     file = models.FileField(upload_to='projects/')
+    # 0 = proposal, 1 = data, 2 = results
     type = models.IntegerField(blank=True, default=0)
     uploadDate = models.DateTimeField(auto_now=True)
 

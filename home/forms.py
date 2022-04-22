@@ -27,7 +27,7 @@ class editProjectForm(forms.ModelForm):
 class UploadFileForm(forms.ModelForm):
     class Meta:
         model = Project
-        fields = ('projectTitle', 'projectDescription', 'proposalFile', 'dataFile', 'resultFile')
+        fields = ('projectTitle', 'projectDescription', 'proposalFile')
 
 
 class SignupForm(UserCreationForm):
