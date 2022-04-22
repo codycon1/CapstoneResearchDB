@@ -1,3 +1,4 @@
+from django.core.validators import FileExtensionValidator
 from django.db import models
 
 
@@ -8,7 +9,15 @@ class Project(models.Model):
     projectAuthor = models.CharField(max_length=128)
     projectTitle = models.CharField(max_length=100, verbose_name="Project Title")
     projectDescription = models.CharField(max_length=256, verbose_name="Project Description")
-    proposalFile = models.FileField(upload_to='projects/proposals', verbose_name="Proposal", null=True)
+    proposalFile = models.FileField(
+        validators=[FileExtensionValidator(allowed_extensions=['pdf', 'doc', 'csv', 'xlsx', 'docx'])],
+        upload_to='projects/proposals', verbose_name="Proposal")
+    dataFile = models.FileField(
+        validators=[FileExtensionValidator(allowed_extensions=['pdf', 'doc', 'csv', 'xlsx', 'docx'])],
+        upload_to='projects/datasets', verbose_name="Data", null=True)
+    resultFile = models.FileField(
+        validators=[FileExtensionValidator(allowed_extensions=['pdf', 'doc', 'csv', 'xlsx', 'docx'])],
+        upload_to='projects/results', verbose_name="Results", null=True)
     approval = models.BooleanField(default=False)
 
     def __str__(self):

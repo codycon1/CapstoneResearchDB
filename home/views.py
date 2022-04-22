@@ -104,23 +104,20 @@ def unauthorized(request):
 
 
 def approveProposal(request):
-    try:
-        if not request.session['user']['is_staff']:
-            return redirect('unauthorized')
-        else:
-            userInfo = request.session
-            context = {'pending': Project.objects.filter(approval=False), 'user': userInfo['user']}
-            if request.method == 'POST':
-                id = request.POST.get('id', 0)
-                proposalObject = Project.objects.get(id=request.POST['id'])
-                title = request.POST.get('projectTitle', "")
-                if 'approve' in request.POST:
-                    proposalObject.approval = True
-                    proposalObject.save()
-                elif 'delete' in request.POST:
-                    proposalObject.delete()
-            else:
-                pass
-        return render(request, 'approveproposal.html', context)
-    except:
+    if not request.session['user']['is_staff']:
         return redirect('unauthorized')
+    else:
+        userInfo = request.session
+        context = {'pending': Project.objects.filter(approval=False), 'user': userInfo['user']}
+        if request.method == 'POST':
+            id = request.POST.get('id', 0)
+            proposalObject = Project.objects.get(id=request.POST['id'])
+            title = request.POST.get('projectTitle', "")
+            if 'approve' in request.POST:
+                proposalObject.approval = True
+                proposalObject.save()
+            elif 'delete' in request.POST:
+                proposalObject.delete()
+        else:
+            pass
+    return render(request, 'approveproposal.html', context)
