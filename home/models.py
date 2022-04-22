@@ -12,14 +12,16 @@ class Project(models.Model):
     approval = models.BooleanField(default=False)
 
     def __str__(self):
-        self.projectInfo = (self.projectAuthor, self.date, self.projectTitle, self.proposalFile)
-        return str(self.projectInfo)
+        # self.projectInfo = (self.projectAuthor, self.date, self.projectTitle, self.proposalFile)
+        # return str(self.projectInfo)
+        return str(self.projectTitle)
 
 
 class ProjectFile(models.Model):
     projectID = models.ForeignKey(Project, on_delete=models.CASCADE)
     userEmail = models.EmailField(max_length=256)
     file = models.FileField(upload_to='projects/')
+    type = models.IntegerField(blank=True, default=0)
     uploadDate = models.DateTimeField(auto_now=True)
 
     def __str__(self):

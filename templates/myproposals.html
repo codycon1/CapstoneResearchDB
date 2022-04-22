@@ -52,27 +52,27 @@
                 <tr>
                     <td></td>
                     <td>
-                        <form method="post">
+                        <form method="post" enctype="multipart/form-data">
                             {% csrf_token %}
-                            <input type="hidden" name="type" value="general">
+                            <input type="hidden" name="type" value="0">
                             <input type="hidden" name="id" value="{{ item.id }}">
                             <input type="file" name="file"><br>
                             <input type="submit" name="Upload" value="Upload">
                         </form>
                     </td>
                     <td>
-                        <form method="post">
+                        <form method="post" enctype="multipart/form-data">
                             {% csrf_token %}
-                            <input type="hidden" name="type" value="data">
+                            <input type="hidden" name="type" value="1">
                             <input type="hidden" name="id" value="{{ item.id }}">
                             <input type="file" name="file"><br>
                             <input type="submit" name="Upload" value="Upload">
                         </form>
                     </td>
                     <td>
-                        <form method="post">
+                        <form method="post" enctype="multipart/form-data">
                             {% csrf_token %}
-                            <input type="hidden" name="type" value="result">
+                            <input type="hidden" name="type" value="3">
                             <input type="hidden" name="id" value="{{ item.id }}">
                             <input type="file" name="file"><br>
                             <input type="submit" name="Upload" value="Upload">

@@ -37,8 +37,18 @@ def viewSubmissions(request):
     userInfo = request.session
 
     #TODO: Process additional file upload here
-    # if request.method == 'POST':
-    #     if request.POST.get('')
+    if request.method == 'POST':
+        file = request.POST.get('file', None)
+        filetype = request.POST.get('type', None)
+        id = request.POST.get('id', None)
+        file = request.FILES['file']
+        if file is not None and filetype is not None:
+            projectfile_instance = ProjectFile.objects.create(projectID_id=request.POST.get('id', None))
+            projectfile_instance.userEmail = request.session['user']['email']
+            print(request.POST.get('id', None))
+            projectfile_instance.file = file
+            projectfile_instance.type = request.POST.get('type', None)
+            projectfile_instance.save()
 
     context = {'accepted': Project.objects.filter(approval=True, email=userInfo['user']['email']),
                'pending': Project.objects.filter(approval=False, email=userInfo['user']['email']),
