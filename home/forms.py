@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
+from django.forms.widgets import ClearableFileInput
 
 from .models import *
 
@@ -28,6 +29,18 @@ class UploadFileForm(forms.ModelForm):
     class Meta:
         model = Project
         fields = ('projectTitle', 'projectDescription', 'proposalFile')
+
+
+class UploadDataFiles(forms.ModelForm):
+    class Meta:
+        model = ProjectFile
+        fields = ('file',)
+
+
+class UploadResultFiles(forms.ModelForm):
+    class Meta:
+        model = ResultFile
+        fields = ('resultFile',)
 
 
 class SignupForm(UserCreationForm):

@@ -1,5 +1,6 @@
 from django.core.validators import FileExtensionValidator
 from django.db import models
+from multiupload.fields import MultiFileField
 
 
 # Create your models here.
@@ -10,7 +11,8 @@ class Project(models.Model):
     projectTitle = models.CharField(max_length=100, verbose_name="Project Title")
     projectDescription = models.CharField(max_length=256, verbose_name="Project Description")
     proposalFile = models.FileField(
-        validators=[FileExtensionValidator(allowed_extensions=['pdf', 'doc', 'csv', 'xlsx', 'docx', 'txt'])],
+        validators=[FileExtensionValidator(
+            allowed_extensions=['pdf', 'doc', 'csv', 'xlsx', 'docx', 'txt'])],
         # TODO: Remove .txt
         upload_to='projects/proposals', verbose_name="Proposal")
     approval = models.BooleanField(default=False)
@@ -25,9 +27,10 @@ class ProjectFile(models.Model):
     projectID = models.ForeignKey(Project, on_delete=models.CASCADE)
     userEmail = models.EmailField(max_length=256)
     file = models.FileField(
-        validators=[FileExtensionValidator(allowed_extensions=['pdf', 'doc', 'csv', 'xlsx', 'docx', 'txt'])],
+        validators=[
+            FileExtensionValidator(allowed_extensions=['pdf', 'doc', 'csv', 'xlsx', 'docx', 'txt'])],
         # TODO: Remove .txt
-        upload_to='projects/Datasets', verbose_name="Results")
+        upload_to='projects/datasets', verbose_name="datasets")
     # 0 = proposal, 1 = data, 2 = results
     type = models.IntegerField(blank=True, default=1)
     uploadDate = models.DateTimeField(auto_now=True)
@@ -42,7 +45,7 @@ class ResultFile(models.Model):
     resultFile = models.FileField(
         validators=[FileExtensionValidator(allowed_extensions=['pdf', 'doc', 'csv', 'xlsx', 'docx', 'txt'])],
         # TODO: Remove .txt
-        upload_to='projects/results', verbose_name="Results")
+        upload_to='projects/results', verbose_name="results")
     # 0 = proposal, 1 = data, 2 = results
     type = models.IntegerField(blank=True, default=2)
     uploadDate = models.DateTimeField(auto_now=True)

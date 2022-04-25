@@ -7,15 +7,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2b02c2c1-1613-4822-a35f-dc76262b1d25" name="Changes" comment="Got file uploading for dataset figured out somewhat">
+    <list default="true" id="2b02c2c1-1613-4822-a35f-dc76262b1d25" name="Changes" comment="File upload for results and dataset working">
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_4_18_22,_11_24_AM_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_4_18_22__11_24_AM__Changes_.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/home/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/home/forms.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/home/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/migrations/0002_auto_20220422_1115.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/home/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/home/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/home/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/home/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/projects/datasets/Lab_7_Solutions.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/projects/proposals/WS802-11-EvanWhite.docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/projects/datasets/WSEthernetandARP_EvanWhite.docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/projects/proposals/Lab_7_Solutions.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/projects/proposals/Lab_7_Solutions_PBfTFoy.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/projects/proposals/Wireshark-Installation-EvanWhite.docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/projects/results/WS802-11-EvanWhite.docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/SearchResults.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/SearchResults.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/myproposals.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/myproposals.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/users/migrations/0001_initial.py" beforeDir="false" />
     </list>
@@ -198,6 +204,7 @@
       <workItem from="1650646629240" duration="2913000" />
       <workItem from="1650650662537" duration="1551000" />
       <workItem from="1650828255746" duration="19761000" />
+      <workItem from="1650909568772" duration="7169000" />
     </task>
     <task id="LOCAL-00001" summary="Made upload form and file model">
       <created>1644863885539</created>
@@ -430,7 +437,21 @@
       <option name="project" value="LOCAL" />
       <updated>1650850049974</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="File upload for results and dataset working">
+      <created>1650908660972</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1650908660972</updated>
+    </task>
+    <task id="LOCAL-00035" summary="File upload for results and dataset working">
+      <created>1650908692159</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1650908692159</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -448,7 +469,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Upload functionality working, sort of.." />
     <MESSAGE value="Both upload and download functionality working" />
     <MESSAGE value="Slight tweak, upload and download functionality still working" />
     <MESSAGE value="Started search querying, having issues running the server" />
@@ -473,6 +493,7 @@
     <MESSAGE value="More styling" />
     <MESSAGE value="File validation and downloading working." />
     <MESSAGE value="Got file uploading for dataset figured out somewhat" />
-    <option name="LAST_COMMIT_MESSAGE" value="Got file uploading for dataset figured out somewhat" />
+    <MESSAGE value="File upload for results and dataset working" />
+    <option name="LAST_COMMIT_MESSAGE" value="File upload for results and dataset working" />
   </component>
 </project>

@@ -24,9 +24,9 @@
         <td>{{ each_project.projectTitle }}</td>
         <td>{{ each_project.projectAuthor }}</td>
         <td>{{ each_project.date }}</td>
-        <td><a href="{{ each_project.file.url }}"><button type="button">Download</button></a></td>
-        <td><a href="{{ each_project.dataFiles.url }}"><button type="button">Download</button></a></td>
-        <td><a href="{{ each_project.resultFiles.url }}"><button type="button">Download</button></a></td>
+        <td><a href="{{ each_project.proposalFile.url }}"><button type="button">Download</button></a></td>
+        <td><a href="{{each_project.dataFile.url}}"><button type="button">Download</button></a></td>
+        <td><a href="{{ each_project.resultfile_set.all }}"><button type="button">Download</button></a></td>
         </tr>
         </tbody>
     <!--<p></p>
@@ -37,7 +37,7 @@
     <p><a href=""><button type="button">Result Files</button> </a></p>
     <hr/>-->
 {% endfor %}
-        {% else %}
+         {% else %}
         <p>Results not found given your search term</p>
 {% endif %}
     </table>

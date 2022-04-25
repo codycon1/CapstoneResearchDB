@@ -35,7 +35,7 @@
                 <tr>
                 <td><a href="/projectdetail?id={{ item.id }}">{{ item.projectTitle }}</a></td>
                     <td>{{ item.projectDescription }}</td>
-                    <td><a href="{{ item.proposalFile.url }}"><button type="button">Download</button></a>
+                    <td><a href="{{ item.proposalFile.url}}"><button type="button">Download</button></a>
                         <form method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <input type="hidden" name="type" value="0">
@@ -45,17 +45,18 @@
                             <input type="submit" name="Upload" value="Upload">
                         </form>
                     </td>
-                    <td><a href="{{ item.dataFiles.file.url }}"><button type="button">Download</button></a>
+                    <td><a href="{{ dataFileUrl }}"><button type="button">Download</button></a>
                         <form method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <input type="hidden" name="type" value="1">
                             <input type="hidden" name="id" value="{{ item.id }}">
+                            <input type="hidden" name="dataTitle" value="{{ item.projectTitle }}">
                             <input type="file" name="file"><br>
                             <input type="submit" name="Upload" value="Upload">
                         </form>
+                        </form>
                     </td>
-                    <td><a href="{{ item.resultFiles.url }}"><button type="button">Download</button></a>
-                        <p>Result File Upload</p>
+                    <td><a href="{{ item.resultfile_set.url }}"><button type="button">Download</button></a>
                         <form method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <input type="hidden" name="type" value="2">
@@ -70,7 +71,7 @@
                     </td>
                     {#                TODO: Hook up these buttons#}
                 </tr>
-            {% endfor %}
+            {%  endfor %}
             </tbody>
         </table>
     </div>
