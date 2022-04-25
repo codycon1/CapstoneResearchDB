@@ -45,7 +45,7 @@
                             <input type="submit" name="Upload" value="Upload">
                         </form>
                     </td>
-                    <td><a href="{{ item.dataFiles.url }}"><button type="button">Download</button></a>
+                    <td><a href="{{ item.dataFiles.file.url }}"><button type="button">Download</button></a>
                         <form method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <input type="hidden" name="type" value="1">
@@ -55,9 +55,10 @@
                         </form>
                     </td>
                     <td><a href="{{ item.resultFiles.url }}"><button type="button">Download</button></a>
+                        <p>Result File Upload</p>
                         <form method="post" enctype="multipart/form-data">
                             {% csrf_token %}
-                            <input type="hidden" name="type" value="3">
+                            <input type="hidden" name="type" value="2">
                             <input type="hidden" name="id" value="{{ item.id }}">
                             <input type="file" name="file"><br>
                             <input type="submit" name="Upload" value="Upload">
