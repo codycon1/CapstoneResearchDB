@@ -44,7 +44,7 @@ def viewSubmissions(request):
         file = request.FILES['file']
         projectTitle = request.POST.get('dataTitle')
         if file is not None and filetype is not None:
-            projectfile_instance = ProjectFile.objects.create(projectID=Project(id=id,projectTitle=projectTitle,email=request.session['user']['email']))
+            projectfile_instance = ProjectFile.objects.update_or_create(projectID=Project(id=id,projectTitle=projectTitle,email=request.session['user']['email']))
             projectfile_instance.userEmail = request.session['user']['email']
             print(request.POST.get('id', None))
             projectfile_instance.file = file
