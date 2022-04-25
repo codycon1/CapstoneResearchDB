@@ -1,0 +1,134 @@
+Index: templates/myproposals.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{% extends 'base.html' %}\n{% block content %}\n    <div id=\"container\">\n        <h1>My Proposals</h1>\n        <table>\n            <thead>\n            <tr>\n                <th>Pending</th>\n                <th>General project files</th>\n                <th>Data Files</th>\n                <th>Result Files</th>\n            </tr>\n            </thead>\n            <tbody>\n            {% for item in pending %}\n                <tr>\n                    <td>{{ item.projectTitle }}</td>\n                    <td><a href=\"{{ item.file }}\">\n                        <button type=\"button\">Download</button>\n                    </a></td>\n                    <td><a href=\"{{ item.dataFiles }}\">\n                        <button type=\"button\">Download</button>\n                    </a></td>\n                    <td><a href=\"{{ item.resultFiles }}\">\n                        <button type=\"button\">Download</button>\n                    </a></td>\n                </tr>\n            {% endfor %}\n            </tbody>\n            <thead>\n            <tr>\n                <th>Accepted</th>\n                <th>General project files</th>\n                <th>Data Files</th>\n                <th>Result Files</th>\n            </tr>\n            </thead>\n            <tbody>\n            {% for item in accepted %}\n                <tr>\n                    <td>{{ item.projectTitle }}</td>\n                    <td><a href=\"{{ item.file }}\">\n                        <button type=\"button\">Download</button>\n                    </a></td>\n                    <td><a href=\"{{ item.dataFiles }}\">\n                        <button type=\"button\">Download</button>\n                    </a></td>\n                    <td><a href=\"{{ item.resultFiles }}\">\n                        <button type=\"button\">Download</button>\n                    </a></td>\n                </tr>\n                <tr>\n                    <td></td>\n                    <td>\n                        <form method=\"post\">\n                            {% csrf_token %}\n                            <input type=\"hidden\" name=\"type\" value=\"general\">\n                            <input type=\"submit\" name=\"Upload\" value=\"Upload\">\n                        </form>\n                    </td>\n                    <td>\n                        <form method=\"post\">\n                            {% csrf_token %}\n                            <input type=\"hidden\" name=\"type\" value=\"general\">\n                            <input type=\"submit\" name=\"Upload\" value=\"Upload\">\n                        </form>\n                    </td>\n                    <td>\n                        <form method=\"post\">\n                            {% csrf_token %}\n                            <input type=\"hidden\" name=\"type\" value=\"general\">\n                            <input type=\"submit\" name=\"Upload\" value=\"Upload\">\n                        </form>\n                    </td>\n{#                TODO: Hook up these buttons#}\n                </tr>\n            {% endfor %}\n            </tbody>\n        </table>\n    </div>\n{% endblock %}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/templates/myproposals.html b/templates/myproposals.html
+--- a/templates/myproposals.html	
++++ b/templates/myproposals.html	
+@@ -2,80 +2,48 @@
+ {% block content %}
+     <div id="container">
+         <h1>My Proposals</h1>
+-        <table>
+-            <thead>
+-            <tr>
+-                <th>Pending</th>
+-                <th>General project files</th>
+-                <th>Data Files</th>
+-                <th>Result Files</th>
+-            </tr>
+-            </thead>
+-            <tbody>
+-            {% for item in pending %}
+-                <tr>
+-                    <td>{{ item.projectTitle }}</td>
+-                    <td><a href="{{ item.file }}">
+-                        <button type="button">Download</button>
+-                    </a></td>
+-                    <td><a href="{{ item.dataFiles }}">
+-                        <button type="button">Download</button>
+-                    </a></td>
+-                    <td><a href="{{ item.resultFiles }}">
+-                        <button type="button">Download</button>
+-                    </a></td>
+-                </tr>
+-            {% endfor %}
+-            </tbody>
+-            <thead>
+-            <tr>
+-                <th>Accepted</th>
+-                <th>General project files</th>
+-                <th>Data Files</th>
+-                <th>Result Files</th>
+-            </tr>
+-            </thead>
+-            <tbody>
+-            {% for item in accepted %}
+-                <tr>
+-                    <td>{{ item.projectTitle }}</td>
+-                    <td><a href="{{ item.file }}">
+-                        <button type="button">Download</button>
+-                    </a></td>
+-                    <td><a href="{{ item.dataFiles }}">
+-                        <button type="button">Download</button>
+-                    </a></td>
+-                    <td><a href="{{ item.resultFiles }}">
+-                        <button type="button">Download</button>
+-                    </a></td>
+-                </tr>
+-                <tr>
+-                    <td></td>
+-                    <td>
+-                        <form method="post">
+-                            {% csrf_token %}
+-                            <input type="hidden" name="type" value="general">
+-                            <input type="submit" name="Upload" value="Upload">
+-                        </form>
+-                    </td>
+-                    <td>
+-                        <form method="post">
+-                            {% csrf_token %}
+-                            <input type="hidden" name="type" value="general">
+-                            <input type="submit" name="Upload" value="Upload">
+-                        </form>
+-                    </td>
+-                    <td>
+-                        <form method="post">
+-                            {% csrf_token %}
+-                            <input type="hidden" name="type" value="general">
+-                            <input type="submit" name="Upload" value="Upload">
+-                        </form>
+-                    </td>
+-{#                TODO: Hook up these buttons#}
+-                </tr>
+-            {% endfor %}
+-            </tbody>
+-        </table>
++    <table>
++    <h3>Pending Projects</h3>
++    <thead>
++    <tr>
++        <th>Title of project</th>
++        <th>General project files</th>
++        <th>Data Files</th>
++        <th>Result Files</th>
++    </tr>
++    </thead>
++    <tbody>
++        {% for item in pending %}
++            <tr>
++            <p>{{ item.proposalFile }}</p>
++            <td>{{ item.projectTitle }}</td>
++            <td><a href="{{ item.proposalFile }}"><button type="button">Download</button></a></td>
++            <td><a href="{{ item.dataFile }}"><button type="button">Download</button></a></td>
++            <td><a href="{{ item.resultFile }}"><button type="button">Download</button></a></td>
++            </tr>
++        {% endfor %}
++    </tbody>
++    </table>
++    <table>
++    <h3>Accepted Projects</h3>
++    <thead>
++    <tr>
++        <th>Title of project</th>
++        <th>General project files</th>
++        <th>Data Files</th>
++        <th>Result Files</th>
++    </tr>
++    </thead>
++    <tbody>
++        {% for item in accepted %}
++            <tr>
++            <td>{{ item.projectTitle }}</td>
++            <td><a href="{{ item.file }}"><button type="button">Download</button></a></td>
++            <td><a href="{{ item.dataFiles }}"><button type="button">Download</button></a></td>
++            <td><a href="{{ item.resultFiles }}"><button type="button">Download</button></a></td>
++            </tr>
++        {% endfor %}
++    </tbody>
++    </table>
+     </div>
+ {% endblock %}

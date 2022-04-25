@@ -1,0 +1,349 @@
+Index: home/views.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.http import HttpResponse\nfrom django.shortcuts import render, redirect\nfrom django.core.files.storage import FileSystemStorage\nfrom django.views.generic import ListView\nfrom .forms import UploadFileForm\nfrom .models import *\nfrom django.db.models import Q\n\n\n# Create your views here.\ndef home(request):\n    return render(request, 'home.html')\n\n\ndef SearchRequest(request):\n    if request.method == 'GET':\n        projectName = request.GET.get(\"search\")\n        status = Project.objects.filter(Q(projectTitle__icontains=projectName) | Q(projectAuthor__icontains=projectName))\n        return render(request, \"SearchResults.html\", {\"projects\": status})\n    else:\n        return render(request, \"SearchResults.html\", {})\n\n\ndef saveFileUpload(request):\n    form = UploadFileForm()\n    try:\n        if request.method == 'POST':\n            form = UploadFileForm(request.POST, request.FILES)\n            if form.is_valid():\n                form.save()\n                project_info = form.instance()\n                return render(request, 'fileupload.html', {'form': form, 'project_info': project_info})\n            else:\n                form = UploadFileForm()\n            return render(request, 'fileupload.html', {'form': form})\n    except Exception as identifier:\n        print(identifier)\n    return render(request, 'fileupload.html', {'form': form})\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/home/views.py b/home/views.py
+--- a/home/views.py	
++++ b/home/views.py	
+@@ -5,6 +5,8 @@
+ from .forms import UploadFileForm
+ from .models import *
+ from django.db.models import Q
++from django.contrib.auth.mixins import LoginRequiredMixin
++from django.views.generic import TemplateView
+ 
+ 
+ # Create your views here.
+@@ -12,10 +14,19 @@
+     return render(request, 'home.html')
+ 
+ 
++def viewProjects(request):
++    context = {}
++    context['pending'] = Project.objects.filter(approval=False)
++    context['approved'] = Project.objects.filter(approval=True)
++    return render(request, 'myproposals.html', context)
++
++
+ def SearchRequest(request):
+     if request.method == 'GET':
+         projectName = request.GET.get("search")
+-        status = Project.objects.filter(Q(projectTitle__icontains=projectName) | Q(projectAuthor__icontains=projectName))
++        status = Project.objects.filter(
++            Q(projectTitle__icontains=projectName),
++            Q(approval=True) | Q(projectAuthor__icontains=projectName), Q(approval=True))
+         return render(request, "SearchResults.html", {"projects": status})
+     else:
+         return render(request, "SearchResults.html", {})
+@@ -35,5 +46,5 @@
+             return render(request, 'fileupload.html', {'form': form})
+     except Exception as identifier:
+         print(identifier)
++    raise_exception = True
+     return render(request, 'fileupload.html', {'form': form})
+-
+Index: home/urls.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.urls import re_path as url\nfrom django.conf.urls.static import static\nfrom django.views.generic import TemplateView\nfrom django.contrib import admin\nfrom django.urls import path\n\nfrom capstone import settings\nfrom home import views\nfrom home.views import SearchRequest\n\n\"\"\"capstone URL Configuration\n\nThe `urlpatterns` list routes URLs to views. For more information please see:\n    https://docs.djangoproject.com/en/4.0/topics/http/urls/\nExamples:\nFunction views\n    1. Add an import:  from my_app import views\n    2. Add a URL to urlpatterns:  path('', views.home, name='home')\nClass-based views\n    1. Add an import:  from other_app.views import Home\n    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')\nIncluding another URLconf\n    1. Import the include() function: from django.urls import include, path\n    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))\n\"\"\"\n\nurlpatterns = [\n                  path('', views.home),\n                  path('Search/', TemplateView.as_view(template_name='SearchPage.html')),\n                  path('upload/', views.saveFileUpload, name='saveFileUpload'),\n                  path('saved/', views.saveFileUpload, name=\"saved\"),\n                  path('SearchResults/', SearchRequest, name=\"SearchRequest\")\n\n              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/home/urls.py b/home/urls.py
+--- a/home/urls.py	
++++ b/home/urls.py	
+@@ -29,6 +29,7 @@
+                   path('Search/', TemplateView.as_view(template_name='SearchPage.html')),
+                   path('upload/', views.saveFileUpload, name='saveFileUpload'),
+                   path('saved/', views.saveFileUpload, name="saved"),
+-                  path('SearchResults/', SearchRequest, name="SearchRequest")
++                  path('SearchResults/', SearchRequest, name="SearchRequest"),
++                  path('submissions/',views.viewProjects,name="ViewProjects")
+ 
+               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+Index: proposal/urls.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.urls import path\nfrom proposal import views\n\nurlpatterns = [\n    path('submit', views.submit_proposal),\n    path('mysubmissions', views.my_submissions),\n]
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/proposal/urls.py b/proposal/urls.py
+--- a/proposal/urls.py	
++++ b/proposal/urls.py	
+@@ -4,4 +4,5 @@
+ urlpatterns = [
+     path('submit', views.submit_proposal),
+     path('mysubmissions', views.my_submissions),
+-]
+\ No newline at end of file
++    path('Search', views.SearchRequest),
++]
+Index: home/forms.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django import forms\nfrom django.contrib.auth.forms import UserCreationForm\n\nfrom .models import Project\n\n\nclass UploadFileForm(forms.ModelForm):\n    class Meta:\n        model = Project\n        fields = ('projectAuthor', 'date', 'projectTitle', 'file')\n\n\nclass SignupForm(UserCreationForm):\n    first_name = forms.CharField(max_length=32, required=True, help_text='First Name')\n    last_name = forms.CharField(max_length=32, required=True, help_text='Last Name')\n    email = forms.CharField(max_length=64, required=True, help_text='email')\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/home/forms.py b/home/forms.py
+--- a/home/forms.py	
++++ b/home/forms.py	
+@@ -7,7 +7,7 @@
+ class UploadFileForm(forms.ModelForm):
+     class Meta:
+         model = Project
+-        fields = ('projectAuthor', 'date', 'projectTitle', 'file')
++        fields = ('projectAuthor', 'date', 'projectTitle', 'file','approval')
+ 
+ 
+ class SignupForm(UserCreationForm):
+Index: capstone/urls.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>\"\"\"capstone URL Configuration\n\nThe `urlpatterns` list routes URLs to views. For more information please see:\n    https://docs.djangoproject.com/en/4.0/topics/http/urls/\nExamples:\nFunction views\n    1. Add an import:  from my_app import views\n    2. Add a URL to urlpatterns:  path('', views.home, name='home')\nClass-based views\n    1. Add an import:  from other_app.views import Home\n    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')\nIncluding another URLconf\n    1. Import the include() function: from django.urls import include, path\n    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))\n\"\"\"\nfrom django.conf.urls.static import static\nfrom django.contrib import admin\nfrom django.urls import path, include\n\nimport home.urls\nimport users.urls\nimport proposal.urls\nfrom django.conf import settings\n\nurlpatterns = [\n                  path('admin/', admin.site.urls),\n                  path('', include(home.urls)),\n                  path('', include(proposal.urls)),\n                  path('', include(users.urls)),\n                  path('', include('django.contrib.auth.urls')),\n                  path('', include(home.urls)),\n              ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/capstone/urls.py b/capstone/urls.py
+--- a/capstone/urls.py	
++++ b/capstone/urls.py	
+@@ -29,4 +29,5 @@
+                   path('', include(users.urls)),
+                   path('', include('django.contrib.auth.urls')),
+                   path('', include(home.urls)),
++                  path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"ProjectRootManager\" version=\"2\" project-jdk-name=\"Python 3.7 (capstone)\" project-jdk-type=\"Python SDK\" />\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	
++++ b/.idea/misc.xml	
+@@ -1,4 +1,4 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.7 (capstone)" project-jdk-type="Python SDK" />
++  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.8 (capstone)" project-jdk-type="Python SDK" />
+ </project>
+\ No newline at end of file
+Index: capstone/settings.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>\"\"\"\nDjango settings for capstone project.\n\nGenerated by 'django-admin startproject' using Django 4.0.1.\n\nFor more information on this file, see\nhttps://docs.djangoproject.com/en/4.0/topics/settings/\n\nFor the full list of settings and their values, see\nhttps://docs.djangoproject.com/en/4.0/ref/settings/\n\"\"\"\nimport os\nfrom pathlib import Path\n\n# Build paths inside the project like this: BASE_DIR / 'subdir'.\nBASE_DIR = Path(__file__).resolve().parent.parent\n\n# Quick-start development settings - unsuitable for production\n# See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/\n\n# SECURITY WARNING: keep the secret key used in production secret!\nSECRET_KEY = 'django-insecure-r4b$s#dm4si$@ufv+w65o9kip=t#2v5g$k7dqfx!kw(n$+51$0'\n\n# SECURITY WARNING: don't run with debug turned on in production!\nDEBUG = True\n\nAUTH_USER_MODEL = 'users.RUser'\n\nALLOWED_HOSTS = []\n\n# Application definition\n\nINSTALLED_APPS = [\n    'django.contrib.admin',\n    'django.contrib.auth',\n    'django.contrib.contenttypes',\n    'django.contrib.sessions',\n    'django.contrib.messages',\n    'django.contrib.staticfiles',\n    'home',\n    'users',\n    'proposal',\n]\nMEDIA_ROOT = os.path.join(BASE_DIR, 'projects')\nMEDIA_URL = 'projects/'\n\nMIDDLEWARE = [\n    'django.middleware.security.SecurityMiddleware',\n    'django.contrib.sessions.middleware.SessionMiddleware',\n    'django.middleware.common.CommonMiddleware',\n    'django.middleware.csrf.CsrfViewMiddleware',\n    'django.contrib.auth.middleware.AuthenticationMiddleware',\n    'django.contrib.messages.middleware.MessageMiddleware',\n    'django.middleware.clickjacking.XFrameOptionsMiddleware',\n]\n\nROOT_URLCONF = 'capstone.urls'\n\nTEMPLATES = [\n    {\n        'BACKEND': 'django.template.backends.django.DjangoTemplates',\n        'DIRS': [BASE_DIR / 'templates']\n        ,\n        'APP_DIRS': True,\n        'OPTIONS': {\n            'context_processors': [\n                'django.template.context_processors.debug',\n                'django.template.context_processors.request',\n                'django.contrib.auth.context_processors.auth',\n                'django.contrib.messages.context_processors.messages',\n            ],\n        },\n    },\n]\n\nWSGI_APPLICATION = 'capstone.wsgi.application'\n\n# Database\n# https://docs.djangoproject.com/en/4.0/ref/settings/#databases\n\nDATABASES = {\n    'default': {\n        'ENGINE': 'django.db.backends.sqlite3',\n        'NAME': BASE_DIR / 'db.sqlite3',\n    }\n\n}\n\n# Password validation\n# https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators\n\nAUTH_PASSWORD_VALIDATORS = [\n    {\n        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',\n    },\n    {\n        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',\n    },\n    {\n        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',\n    },\n    {\n        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',\n    },\n]\n\n# Internationalization\n# https://docs.djangoproject.com/en/4.0/topics/i18n/\n\nLANGUAGE_CODE = 'en-us'\n\nTIME_ZONE = 'UTC'\n\nUSE_I18N = True\n\nUSE_TZ = True\n\n# Static files (CSS, JavaScript, Images)\n# https://docs.djangoproject.com/en/4.0/howto/static-files/\n\nSTATIC_URL = 'static/'\nSTATICFILES_DIRS = [\n    BASE_DIR / \"static\",\n    '/var/www/static/',\n]\n# Default primary key field type\n# https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field\n\nDEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'\n\nLOGIN_REDIRECT_URL = '/'\nLOGOUT_REDIRECT_URL = '/'\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/capstone/settings.py b/capstone/settings.py
+--- a/capstone/settings.py	
++++ b/capstone/settings.py	
+@@ -40,6 +40,7 @@
+     'home',
+     'users',
+     'proposal',
++    'oauth2_provider',
+ ]
+ MEDIA_ROOT = os.path.join(BASE_DIR, 'projects')
+ MEDIA_URL = 'projects/'
+Index: proposal/forms.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django import forms\nfrom .models import proposal\n\n\nclass SubmitProposalForm(forms.ModelForm):\n    class Meta:\n        model = proposal\n        fields = [\n            'title',\n            'description',\n        ]\n    def __str__(self):\n        return self.title\n\n    # Default approval and user to false / current login user\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/proposal/forms.py b/proposal/forms.py
+--- a/proposal/forms.py	
++++ b/proposal/forms.py	
+@@ -5,11 +5,6 @@
+ class SubmitProposalForm(forms.ModelForm):
+     class Meta:
+         model = proposal
+-        fields = [
+-            'title',
+-            'description',
+-        ]
+-    def __str__(self):
+-        return self.title
++        fields = ('author', 'title', 'file')
+ 
+     # Default approval and user to false / current login user
+Index: templates/base.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><!DOCTYPE html>\n<html>\n\n{% load static %}\n\n<head>\n    <meta charset=\"utf-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, shrink-to-fit=no\">\n    <title>Western Research Database</title>\n    <link rel=\"stylesheet\" href=\"{% static 'bootstrap/css/bootstrap.min.css' %}\">\n    <link rel=\"stylesheet\"\n          href=\"https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic\">\n    <link rel=\"stylesheet\" href=\"{% static 'fonts/simple-line-icons.min.css' %}\">\n    <link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css\">\n</head>\n\n<body>\n<nav class=\"navbar navbar-light navbar-expand bg-light navigation-clean\">\n    <div class=\"container\"><a class=\"navbar-brand\" href=\"/\">Western Research Database</a>\n        <button data-bs-toggle=\"collapse\" class=\"navbar-toggler\" data-bs-target=\"#navcol-1\"></button>\n\n        {% if user.is_authenticated %}\n            <div class=\"collapse navbar-collapse\" id=\"navcol-1\">\n                <a class=\"btn btn-primary ms-auto\" role=\"button\" href=\"/logout\">Sign Out</a>\n                <a class=\"btn btn-secondary ms-auto\" role=\"button\" href=\"/upload\">Upload</a>\n\n                <a class=\"btn btn-secondary ms-auto\" role=\"button\" href=\"/submit\">Submit proposal</a>\n                <a class=\"btn btn-secondary ms-auto\" role=\"button\" href=\"/mysubmissions\">My proposals</a>\n                <a class=\"btn btn-secondary ms-auto\" role=\"button\" href=\"/admin\">Admin</a> {# TODO: Check if staff  #}\n            </div>\n        {% else %}\n            <div class=\"collapse navbar-collapse\" id=\"navcol-1\">\n                <a class=\"btn btn-primary ml-auto ms-3\" role=\"button\"\n                   href=\"/login\">Sign In</a>\n                <a class=\"btn btn-secondary ml-auto ms-3\" role=\"button\"\n                   href=\"/signup\">Sign Up</a>\n            </div>\n        {% endif %}\n\n    </div>\n</nav>\n\n\n{% block content %}\n\n{% endblock %}\n\n<footer class=\"bg-light footer\"></footer>\n<script src=\"{% static 'bootstrap/js/bootstrap.min.js' %}\"></script>\n<script src=\"{% static 'js/bs-init.js' %}\"></script>\n</body>\n\n</html>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/templates/base.html b/templates/base.html
+--- a/templates/base.html	
++++ b/templates/base.html	
+@@ -25,7 +25,7 @@
+                 <a class="btn btn-secondary ms-auto" role="button" href="/upload">Upload</a>
+ 
+                 <a class="btn btn-secondary ms-auto" role="button" href="/submit">Submit proposal</a>
+-                <a class="btn btn-secondary ms-auto" role="button" href="/mysubmissions">My proposals</a>
++                <a class="btn btn-secondary ms-auto" role="button" href="/submissions">My proposals</a>
+                 <a class="btn btn-secondary ms-auto" role="button" href="/admin">Admin</a> {# TODO: Check if staff  #}
+             </div>
+         {% else %}
+@@ -50,4 +50,4 @@
+ <script src="{% static 'js/bs-init.js' %}"></script>
+ </body>
+ 
+-</html>
+\ No newline at end of file
++</html>
+Index: templates/myproposals.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{% extends 'base.html' %}\n\n{% block content %}\n    <h4>My Proposals</h4>\n    <hr/>\n\n    <h5>Pending</h5>\n    <hr/>\n    {% for item in pending %}\n        <h6>{{ item.title }}</h6>\n        <p>{{ item.description }} </p>\n    {% endfor %}\n\n    <h5>Accepted</h5>\n    <hr/>\n    {% for item in accepted %}\n        <h6>{{ item.title }}</h6>\n        <p>{{ item.description }} </p>\n    {% endfor %}\n{% endblock %}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/templates/myproposals.html b/templates/myproposals.html
+--- a/templates/myproposals.html	
++++ b/templates/myproposals.html	
+@@ -1,20 +1,16 @@
+ {% extends 'base.html' %}
+-
+ {% block content %}
+     <h4>My Proposals</h4>
+-    <hr/>
+-
+     <h5>Pending</h5>
+     <hr/>
+     {% for item in pending %}
+-        <h6>{{ item.title }}</h6>
+-        <p>{{ item.description }} </p>
++        <h6>{{ item.projectAuthor }}</h6>
++        <p>{{ item.projectTitle }} </p>
+     {% endfor %}
+-
++    <hr/>
+     <h5>Accepted</h5>
+-    <hr/>
+-    {% for item in accepted %}
+-        <h6>{{ item.title }}</h6>
+-        <p>{{ item.description }} </p>
++    {% for item in Accepted %}
++        <h6>{{ item.projectAuthor }}</h6>
++        <p>{{ item.projectTitle }} </p>
+     {% endfor %}
+-{% endblock %}
+\ No newline at end of file
++{% endblock %}
+Index: templates/SearchPage.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <title>Title</title>\n</head>\n<body>\n<form name=\"myform\" method=\"GET\" action=\"{% url 'SearchRequest' %}\">\n    {% csrf_token %}\n<input type=\"text\" name=\"search\" placeholder=\"Search\" />\n</form>\n</body>\n</html>\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/templates/SearchPage.html b/templates/SearchPage.html
+--- a/templates/SearchPage.html	
++++ b/templates/SearchPage.html	
+@@ -7,7 +7,7 @@
+ <body>
+ <form name="myform" method="GET" action="{% url 'SearchRequest' %}">
+     {% csrf_token %}
+-<input type="text" name="search" placeholder="Search" />
++<input type="text" name="search" placeholder="Search"/>
+ </form>
+ </body>
+ </html>
+Index: proposal/views.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.shortcuts import render, redirect\n\n# Create your views here.\nfrom .models import proposal\nfrom .forms import SubmitProposalForm\n\n\ndef submit_proposal(request):\n    user = request.user\n    if request.method == 'POST':\n        form = SubmitProposalForm(request.POST)\n        if form.is_valid():\n            p = form.save(commit=False)\n            p.author = request.user\n            p.save()\n            return redirect('/')\n    else:\n        form = SubmitProposalForm()\n\n    return render(request, 'newproposal.html', {'form': form, })\n\ndef my_submissions(request):\n    context = {}\n    context['accepted'] = proposal.objects.filter(approval=True)\n    context['pending'] = proposal.objects.filter(approval=False)\n    return render(request, 'myproposals.html', context)
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/proposal/views.py b/proposal/views.py
+--- a/proposal/views.py	
++++ b/proposal/views.py	
+@@ -1,10 +1,23 @@
+ from django.shortcuts import render, redirect
++from django.db.models import Q
+ 
+ # Create your views here.
+ from .models import proposal
+ from .forms import SubmitProposalForm
+ 
+ 
++
++
++def SearchRequest(request):
++    if request.method == 'GET':
++        projectName = request.GET.get("search")
++        status = proposal.objects.filter(
++            Q(title__icontains=projectName) | Q(author__icontains=projectName))
++        return render(request, "SearchResults.html", {"projects": status})
++    else:
++        return render(request, "SearchResults.html", {})
++
++
+ def submit_proposal(request):
+     user = request.user
+     if request.method == 'POST':
+@@ -19,8 +32,9 @@
+ 
+     return render(request, 'newproposal.html', {'form': form, })
+ 
++
+ def my_submissions(request):
+     context = {}
+     context['accepted'] = proposal.objects.filter(approval=True)
+     context['pending'] = proposal.objects.filter(approval=False)
+-    return render(request, 'myproposals.html', context)
+\ No newline at end of file
++    return render(request, 'myproposals.html', context)
+Index: proposal/admin.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.contrib import admin\n\n# Register your models here.\nfrom django.contrib import admin\nfrom proposal import models\n\n@admin.register(models.proposal)\nclass ProposalAdmin(admin.ModelAdmin):\n    pass\n\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/proposal/admin.py b/proposal/admin.py
+--- a/proposal/admin.py	
++++ b/proposal/admin.py	
+@@ -4,8 +4,7 @@
+ from django.contrib import admin
+ from proposal import models
+ 
++
+ @admin.register(models.proposal)
+ class ProposalAdmin(admin.ModelAdmin):
+     pass
+-
+-
+Index: proposal/models.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.db import models\n\n# Create your models here.\nimport sys\n\nfrom capstone import settings\n\nsys.path.insert(0, '~/PycharmProjects/capstone/users')\n\n\nclass proposal(models.Model):\n    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)\n    title = models.CharField(max_length=128, blank=False)\n    description = models.CharField(max_length=256, blank=False)  # TODO: Temporary: Replace with file upload\n    approval = models.BooleanField(default=False)\n\n    def __str__(self):\n        return self.title\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/proposal/models.py b/proposal/models.py
+--- a/proposal/models.py	
++++ b/proposal/models.py	
+@@ -11,8 +11,9 @@
+ class proposal(models.Model):
+     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+     title = models.CharField(max_length=128, blank=False)
+-    description = models.CharField(max_length=256, blank=False)  # TODO: Temporary: Replace with file upload
++    file = models.FileField(upload_to='projects/')
+     approval = models.BooleanField(default=False)
+ 
+     def __str__(self):
+-        return self.title
++        self.projectInfo = (self.author, self.title, self.file, self.approval)
++        return str(self.projectInfo)

@@ -7,9 +7,7 @@
             <tr>
                 <th>Pending</th>
                 <th>Description</th>
-                <th>General project files</th>
-                <th>Data Files</th>
-                <th>Result Files</th>
+                <th>Proposal File</th>
             </tr>
             </thead>
             <tbody>
@@ -18,12 +16,6 @@
                     <td>{{ item.projectTitle }}</td>
                     <td>{{ item.projectDescription }}</td>
                     <td><a href="{{ item.proposalFile.url }}">
-                        <button type="button">Download</button>
-                    </a></td>
-                    <td><a href="{{ item.dataFile.url }}">
-                        <button type="button">Download</button>
-                    </a></td>
-                    <td><a href="{{ item.resultFile.url }}">
                         <button type="button">Download</button>
                     </a></td>
                 </tr>
@@ -45,42 +37,38 @@
                     <td>{{ item.projectDescription }}</td>
                     <td><a href="{{ item.proposalFile.url }}">
                         <button type="button">Download</button>
-                    </a></td>
-                    <td><a href="{{ item.dataFiles.url }}">
-                        <button type="button">Download</button>
-                    </a></td>
-                    <td><a href="{{ item.resultFiles.url }}">
-                        <button type="button">Download</button>
-                    </a></td>
-                </tr>
-                <tr>
-                    <td/><td/>
-                    <td>
                         <form method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <input type="hidden" name="type" value="0">
+                            <input type="hidden" name="dataTitle" value="{{ item.projectTitle }}">
                             <input type="hidden" name="id" value="{{ item.id }}">
                             <input type="file" name="file"><br>
                             <input type="submit" name="Upload" value="Upload">
                         </form>
-                    </td>
-                    <td>
-                        <form method="post" enctype="multipart/form-data">
+                    </a></td>
+                    <td><a href="{{ item.dataFiles.url }}">
+                        <button type="button">Download</button>
+                          <form method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <input type="hidden" name="type" value="1">
                             <input type="hidden" name="id" value="{{ item.id }}">
                             <input type="file" name="file"><br>
                             <input type="submit" name="Upload" value="Upload">
                         </form>
-                    </td>
-                    <td>
-                        <form method="post" enctype="multipart/form-data">
+                    </a></td>
+                    <td><a href="{{ item.resultFiles.url }}">
+                        <button type="button">Download</button>
+                         <form method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <input type="hidden" name="type" value="3">
                             <input type="hidden" name="id" value="{{ item.id }}">
                             <input type="file" name="file"><br>
                             <input type="submit" name="Upload" value="Upload">
                         </form>
+                    </a></td>
+                </tr>
+                <tr>
+                    <td>
                     </td>
                     {#                TODO: Hook up these buttons#}
                 </tr>

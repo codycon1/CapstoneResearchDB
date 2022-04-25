@@ -23,7 +23,7 @@ class Project(models.Model):
 class ProjectFile(models.Model):
     projectID = models.ForeignKey(Project, on_delete=models.CASCADE)
     userEmail = models.EmailField(max_length=256)
-    file = models.FileField(upload_to='projects/')
+    file = models.FileField(upload_to='projects/datasets')
     # 0 = proposal, 1 = data, 2 = results
     type = models.IntegerField(blank=True, default=0)
     uploadDate = models.DateTimeField(auto_now=True)

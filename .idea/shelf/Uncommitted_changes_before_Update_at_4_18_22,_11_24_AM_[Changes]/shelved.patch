@@ -1,0 +1,32 @@
+Index: templates/myproposals.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{% extends 'base.html' %}\n{% block content %}\n    <div id=\"container\">\n        <h1>My Proposals</h1>\n    <table>\n    <h3>Pending Projects</h3>\n    <thead>\n    <tr>\n        <th>Title of project</th>\n        <th>General project files</th>\n        <th>Data Files</th>\n        <th>Result Files</th>\n    </tr>\n    </thead>\n    <tbody>\n        {% for item in pending %}\n            <tr>\n            <td>{{ item.projectTitle }}</td>\n            <td><a href=\"{{ item.file }}\"><button type=\"button\">Download</button></a></td>\n            <td><a href=\"{{ item.dataFiles }}\"><button type=\"button\">Download</button></a></td>\n            <td><a href=\"{{ item.resultFiles }}\"><button type=\"button\">Download</button></a></td>\n            </tr>\n        {% endfor %}\n    </tbody>\n    </table>\n    <table>\n    <h3>Accepted Projects</h3>\n    <thead>\n    <tr>\n        <th>Title of project</th>\n        <th>General project files</th>\n        <th>Data Files</th>\n        <th>Result Files</th>\n    </tr>\n    </thead>\n    <tbody>\n        {% for item in accepted %}\n            <tr>\n            <td>{{ item.projectTitle }}</td>\n            <td><a href=\"{{ item.file }}\"><button type=\"button\">Download</button></a></td>\n            <td><a href=\"{{ item.dataFiles }}\"><button type=\"button\">Download</button></a></td>\n            <td><a href=\"{{ item.resultFiles }}\"><button type=\"button\">Download</button></a></td>\n            </tr>\n        {% endfor %}\n    </tbody>\n    </table>\n    </div>\n{% endblock %}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/templates/myproposals.html b/templates/myproposals.html
+--- a/templates/myproposals.html	(revision 8aa7d75ce9f9b8440c5279a8a18c7f97c78b6528)
++++ b/templates/myproposals.html	(date 1650302333284)
+@@ -8,8 +8,8 @@
+     <tr>
+         <th>Title of project</th>
+         <th>General project files</th>
+-        <th>Data Files</th>
+-        <th>Result Files</th>
++        <th>Project Data Files</th>
++        <th>Project Result Files</th>
+     </tr>
+     </thead>
+     <tbody>
+@@ -29,8 +29,8 @@
+     <tr>
+         <th>Title of project</th>
+         <th>General project files</th>
+-        <th>Data Files</th>
+-        <th>Result Files</th>
++        <th>Project Data Files</th>
++        <th>Project Result Files</th>
+     </tr>
+     </thead>
+     <tbody>
