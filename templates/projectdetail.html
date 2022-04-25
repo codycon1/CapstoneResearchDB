@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h4 class="">{{ project.projectTitle }}</h4>
+    {{ project.projectDescription }}
+    {{ project.projectAuthor }}
+
+    <h5 class="">Files</h5>
+    {% for item in files %}
+        {{ item.userEmail }}
+        {{ item.file.url }}
+    {% endfor %}
+{% endblock %}
