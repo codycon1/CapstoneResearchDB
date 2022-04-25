@@ -64,6 +64,19 @@ def viewSubmissions(request):
     return render(request, 'myproposals.html', context)
 
 
+def ProjectDetail(request):
+    projectID = request.GET.get('id', default=None)
+    print(projectID)
+    if projectID is None:
+        return redirect('/')
+    project_instance = Project.objects.get(pk=id)
+
+    print(project_instance.projectTitle)
+
+    context = {}
+    return render(request, 'projectdetail.html', context)
+
+
 def SearchRequest(request):
     context = initialize_context(request)
     user = context['user']
