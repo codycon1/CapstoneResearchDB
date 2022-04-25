@@ -44,9 +44,8 @@ def viewSubmissions(request):
         file = request.FILES['file']
         projectTitle = request.POST.get('dataTitle')
         if file is not None and filetype is not None:
-            projectfile_instance = ProjectFile.objects.update_or_create(projectID=Project(id=id,projectTitle=projectTitle,email=request.session['user']['email']))
+            projectfile_instance = ProjectFile.objects.create(projectID_id=id)
             projectfile_instance.userEmail = request.session['user']['email']
-            print(request.POST.get('id', None))
             projectfile_instance.file = file
             projectfile_instance.type = request.POST.get('type', None)
             projectfile_instance.save()
@@ -55,6 +54,17 @@ def viewSubmissions(request):
                'user': userInfo['user']}
     return render(request, 'myproposals.html', context)
 
+
+def projectDetail(request):
+    projectid = request.GET.get('id', None)
+    if projectid is not None:
+        projectinstance = Project.objects.get(id=projectid)
+        fileinstance = ProjectFile.objects.filter(projectID_id=projectid)
+
+        context = {'project': projectinstance, 'files': fileinstance}
+        return render(request, 'projectdetail.html', context)
+    else:
+        return redirect('/')
 
 
 def SearchRequest(request):

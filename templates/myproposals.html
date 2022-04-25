@@ -33,7 +33,7 @@
             <tbody>
             {% for item in accepted %}
                 <tr>
-                    <td>{{ item.projectTitle }}</td>
+                <td><a href="/projectdetail?id={{ item.id }}">{{ item.projectTitle }}</a></td>
                     <td>{{ item.projectDescription }}</td>
                     <td><a href="{{ item.proposalFile.url }}"><button type="button">Download</button></a>
                         <form method="post" enctype="multipart/form-data">
