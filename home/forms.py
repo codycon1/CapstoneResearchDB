@@ -34,7 +34,7 @@ class UploadFileForm(forms.ModelForm):
 class UploadDataFiles(forms.ModelForm):
     class Meta:
         model = ProjectFile
-        fields = ('file',)
+        fields = ('dataFile',)
 
 
 class UploadResultFiles(forms.ModelForm):

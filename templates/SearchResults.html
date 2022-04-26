@@ -21,13 +21,32 @@
     <tbody>
     {% for each_project in projects %}
         <tr>
-        <td>{{ each_project.projectTitle }}</td>
-        <td>{{ each_project.projectAuthor }}</td>
-        <td>{{ each_project.date }}</td>
-        <td><a href="{{ each_project.proposalFile.url }}"><button type="button">Download</button></a></td>
-        <td><a href="{{each_project.dataFile.url}}"><button type="button">Download</button></a></td>
-        <td><a href="{{ each_project.resultfile_set.all }}"><button type="button">Download</button></a></td>
+         {%  if each_project.dataFile %}
+             {% if each_project.resultFile %}
+            <td>{{ each_project.projectTitle }}</td>
+            <td>{{ each_project.projectAuthor }}</td>
+            <td>{{ each_project.date }}</td>
+            <td><a href="{{ each_project.proposalFile.url}}"><button type="button">Download</button></a></td>
+            <td><a href="{{ each_project.dataFile.url}}"><button type="button">Download Data</button></a></td>
+            <td><a href="{{ each_project.resultFile.url }}"><button type="button">Download Results</button></a></td>
+            {% else %}
+             <td>{{ each_project.projectTitle }}</td>
+            <td>{{ each_project.projectAuthor }}</td>
+            <td>{{ each_project.date }}</td>
+             <td><a href="{{ each_project.proposalFile.url}}"><button type="button">Download</button></a></td>
+             <td><p>No data available yet</p></td>
+            <td><p>No results yet</p></td>
+        {% endif %}
+        {% else %}
+              <td>{{ each_project.projectTitle }}</td>
+              <td>{{ each_project.projectAuthor }}</td>
+              <td>{{ each_project.date }}</td>
+              <td><a href="{{ each_project.proposalFile.url}}"><button type="button">Download</button></a></td>
+             <td><p>No data available yet</p></td>
+             <td><a href="{{ each_project.resultFile.url }}"><button type="button">Download Results</button></a></td>
+        {% endif %}
         </tr>
+             {% endfor %}
         </tbody>
     <!--<p></p>
     <p></p>
@@ -36,10 +55,9 @@
     <p><a href=""><button type="button">Data Files</button></a></p>
     <p><a href=""><button type="button">Result Files</button> </a></p>
     <hr/>-->
-{% endfor %}
          {% else %}
         <p>Results not found given your search term</p>
-{% endif %}
+    {% endif %}
     </table>
     </body>
 {% endblock %}

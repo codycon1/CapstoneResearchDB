@@ -15,6 +15,7 @@ class Project(models.Model):
             allowed_extensions=['pdf', 'doc', 'csv', 'xlsx', 'docx', 'txt'])],
         # TODO: Remove .txt
         upload_to='projects/proposals', verbose_name="Proposal")
+
     approval = models.BooleanField(default=False)
 
     def __str__(self):
@@ -26,13 +27,14 @@ class Project(models.Model):
 class ProjectFile(models.Model):
     projectID = models.ForeignKey(Project, on_delete=models.CASCADE)
     userEmail = models.EmailField(max_length=256)
-    file = models.FileField(
+    dataFile = models.FileField(
         validators=[
-            FileExtensionValidator(allowed_extensions=['pdf', 'doc', 'csv', 'xlsx', 'docx', 'txt'])],
+            FileExtensionValidator(
+                allowed_extensions=['pdf', 'doc', 'csv', 'xlsx', 'docx', 'txt'])],
         # TODO: Remove .txt
         upload_to='projects/datasets', verbose_name="datasets")
     # 0 = proposal, 1 = data, 2 = results
-    type = models.IntegerField(blank=True, default=1)
+    type = models.IntegerField(blank=True, default=0)
     uploadDate = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -47,7 +49,7 @@ class ResultFile(models.Model):
         # TODO: Remove .txt
         upload_to='projects/results', verbose_name="results")
     # 0 = proposal, 1 = data, 2 = results
-    type = models.IntegerField(blank=True, default=2)
+    type = models.IntegerField(blank=True, default=0)
     uploadDate = models.DateTimeField(auto_now=True)
 
     def __str__(self):

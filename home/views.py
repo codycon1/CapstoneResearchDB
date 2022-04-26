@@ -1,9 +1,11 @@
 import datetime
-
+from itertools import chain
+import zipfile
+from django.http import FileResponse
 from pytz import timezone
 from django.db.models import Q
 from django.shortcuts import render, redirect
-
+from zipfile import *
 from users.views import initialize_context
 from .forms import *
 from .models import *
@@ -34,44 +36,39 @@ def home(request):
 
 
 def viewSubmissions(request):
-    global dataFileUrl, dataFile
+    dataSets = []
     userInfo = request.session
     if request.method == 'POST':
         file = request.POST.get('file', None)
         filetype = request.POST.get('type', None)
         id = request.POST.get('id', None)
         file = request.FILES['file']
+        id = int(id)
         filetype = int(filetype)
         projectTitle = request.POST.get('dataTitle')
         if file is not None and filetype == 1:
-            projectFile_instance = ProjectFile.objects.create(
-                projectID=Project(id=id, projectTitle=projectTitle, email=request.session['user']['email']))
-            projectFile_instance.userEmail = request.session['user']['email']
-            print(request.POST.get('id', None))
-            projectFile_instance.file = file
-            projectFile_instance.type = request.POST.get('type', None)
-            projectFile_instance.save()
-            return render(request, 'myproposals.html',
-                          context={'accepted': Project.objects.filter(approval=True, email=userInfo['user']['email']),
-                                   'pending': Project.objects.filter(approval=False, email=userInfo['user']['email']),
-                                   'user': userInfo['user'], 'dataFileUrl': projectFile_instance.file.url})
+            for file in request.FILES.getlist('file'):
+                obj, created = ProjectFile.objects.update_or_create(
+                    projectID=Project(id=id, projectTitle=projectTitle, email=request.session['user']['email']),
+                    dataFile=file, type=filetype, userEmail=userInfo['user']['email'])
+            obj.save()
+            return render(request, 'myproposals.html', context={
+                'accepted': Project.objects.filter(approval=True, email=userInfo['user']['email']),
+                'pending': Project.objects.filter(approval=False, email=userInfo['user']['email']),
+                'user': userInfo['user']})
         if file is not None and filetype == 2:
-            resultFile_instance = ResultFile.objects.create(
-                projectID=Project(id=id, projectTitle=projectTitle, email=request.session['user']['email']))
-            resultFile_instance.userEmail = request.session['user']['email']
-            print(request.POST.get('id', None))
-            resultFile_instance.resultFile = file
-            resultFile_instance.type = request.POST.get('type', None)
-            resultFile_instance.save()
+            obj, created = ResultFile.objects.update_or_create(
+                projectID=Project(id=id, projectTitle=projectTitle, email=request.session['user']['email']),
+                resultFile=file, type=filetype, userEmail=request.session['user']['email'])
+            obj.save()
             return render(request, 'myproposals.html',
                           context={'accepted': Project.objects.filter(approval=True, email=userInfo['user']['email']),
                                    'pending': Project.objects.filter(approval=False, email=userInfo['user']['email']),
-                                   'user': userInfo['user'], 'dataFileUrl': resultFile_instance.resultFile.url})
-        dataFile = ProjectFile.objects.filter(projectID=Project(projectTitle=request.GET.get('dataTitle', None))).values('file')
+                                   'user': userInfo['user']})
     return render(request, 'myproposals.html',
                   context={'accepted': Project.objects.filter(approval=True, email=userInfo['user']['email']),
                            'pending': Project.objects.filter(approval=False, email=userInfo['user']['email']),
-                           'user': userInfo['user'], 'dataFileUrl':dataFile})
+                           'user': userInfo['user']})
 
 
 def ProjectDetail(request):
@@ -80,7 +77,6 @@ def ProjectDetail(request):
     if projectID is None:
         return redirect('/')
     project_instance = Project.objects.get(pk=id)
-
     print(project_instance.projectTitle)
 
     context = {}
@@ -92,13 +88,20 @@ def SearchRequest(request):
     user = context['user']
     if request.method == 'GET':
         projectName = request.GET.get("search")
-        status = Project.objects.filter(
+        projects = Project.objects.filter(
             Q(projectTitle__icontains=projectName, approval=True) | Q(projectAuthor__icontains=projectName,
                                                                       approval=True))
-        dataFilesStatus = ProjectFile.objects.filter(
-            Q(projectID__projectTitle__icontains=projectName, projectID__approval=True) | Q(
-                projectID__projectAuthor__icontains=projectName, projectID__approval=True))
-        return render(request, "SearchResults.html", {"projects": status, 'user': user, 'dataFiles': dataFilesStatus})
+        datasets = ProjectFile.objects.filter(
+            Q(projectID__in=Project.objects.filter(projectTitle__icontains=projectName, approval=True)) | Q(
+                projectID__in=Project.objects.filter(projectAuthor__icontains=projectName,
+                                                     approval=True)))
+        results = ResultFile.objects.filter(
+            Q(projectID__in=Project.objects.filter(projectTitle__icontains=projectName, approval=True)) | Q(
+                projectID__in=Project.objects.filter(projectAuthor__icontains=projectName,
+                                                     approval=True)))
+        status = chain(projects, datasets, results)
+        return render(request, "SearchResults.html",
+                      {"projects": status, 'user': user})
     else:
         return render(request, "SearchResults.html", {'user': user})
 
@@ -122,7 +125,6 @@ def saveFileUpload(request):
                     return render(request, 'fileupload.html',
                                   {'form': form, 'project_info': project_info, 'user': context['user']})
                 else:
-                    print(form.errors)
                     form = UploadFileForm()
                 return render(request, 'fileupload.html', {'form': form, 'user': context['user']})
         except Exception as identifier:
