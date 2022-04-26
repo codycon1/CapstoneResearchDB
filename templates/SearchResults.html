@@ -7,6 +7,9 @@
     <body>
     <h1>Results Found</h1>
      {% if projects %}
+         <script>
+            document.write({{ projects.length }})
+         </script>
     <table>
     <thead>
         <tr>
@@ -21,22 +24,15 @@
     <tbody>
     {% for each_project in projects %}
         <tr>
-            <td>{{ each_project.projectTitle }}</td>
-            <td>{{ each_project.projectAuthor }}</td>
+            <td>{{each_project.projectTitle}}</td>
+            <td>{{each_project.projectAuthor}}</td>
             <td>{{ each_project.date }}</td>
-            <td><a href="{{ each_project.proposalFile.url}}"><button type="button">Download Proposal</button></a></td>
-            <td><a href="/dataFiles?title={{ each_project.projectTitle }}"><button type="button">Download Data</button></a></td>
-            <td><a href="/resultFiles?title={{ each_project.projectTitle }}"><button type="button">Download Results</button></a></td>
+            <td><a href="{{ each_project.proposalFile.url }}"><button type="button">Download Proposal</button></a></td>
+            <td><a href="/dataFiles?title={{ each_project.projectTitle}}"><button type="button">Download Data</button></a></td>
+             <td><a href="/resultFiles?title={{ each_project.projectTitle}}"><button type="button">Download Results</button></a></td>
         </tr>
-             {% endfor %}
+        {%  endfor %}
         </tbody>
-    <!--<p></p>
-    <p></p>
-    <p></p>
-    <p><a href = ""><button type="button">Project Files</button></a></p>
-    <p><a href=""><button type="button">Data Files</button></a></p>
-    <p><a href=""><button type="button">Result Files</button> </a></p>
-    <hr/>-->
          {% else %}
         <p>Results not found given your search term</p>
     {% endif %}

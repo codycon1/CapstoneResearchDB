@@ -7,7 +7,7 @@
 <body>
 <form name="myform" method="GET" action="{% url 'SearchRequest' %}">
     {% csrf_token %}
-<input type="text" name="search" placeholder="Search by author name or project name" />
+<input type="text" name="search"  placeholder="Search by author name or project name"  required>
 </form>
 </body>
 </html>

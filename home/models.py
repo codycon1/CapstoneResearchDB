@@ -1,6 +1,5 @@
 from django.core.validators import FileExtensionValidator
 from django.db import models
-from multiupload.fields import MultiFileField
 
 
 # Create your models here.

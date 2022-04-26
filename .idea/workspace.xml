@@ -7,10 +7,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2b02c2c1-1613-4822-a35f-dc76262b1d25" name="Changes" comment="Changes made:&#10;1. took out the download aspect on my proposal.&#10;2. Got search rolling to be able to download both data and results.&#10;3. changed to update or create in uploading both data and result files">
+    <list default="true" id="2b02c2c1-1613-4822-a35f-dc76262b1d25" name="Changes" comment="Download and Upload arew working for both result and data files">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/home/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/home/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/home/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/home/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/home/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/bootstrap/css/bootstrap.min.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/bootstrap/css/bootstrap.min.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/SearchPage.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/SearchPage.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/SearchResults.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/SearchResults.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/myproposals.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/myproposals.html" afterDir="false" />
     </list>
@@ -196,7 +198,8 @@
       <workItem from="1650909568772" duration="7561000" />
       <workItem from="1650919102647" duration="16940000" />
       <workItem from="1650992179314" duration="8901000" />
-      <workItem from="1651008827772" duration="2546000" />
+      <workItem from="1651008827772" duration="2579000" />
+      <workItem from="1651012890011" duration="3439000" />
     </task>
     <task id="LOCAL-00001" summary="Made upload form and file model">
       <created>1644863885539</created>
@@ -464,7 +467,14 @@
       <option name="project" value="LOCAL" />
       <updated>1651001625595</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="Download and Upload arew working for both result and data files">
+      <created>1651011535686</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1651011535686</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -482,7 +492,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Started search querying, having issues running the server" />
     <MESSAGE value="Some kinks need to be worked out, but the file upload and search functionality are working in unison" />
     <MESSAGE value="Some kinks worked out" />
     <MESSAGE value="the core flow of the database is working, from uploading projects, to approving them, and searching them." />
@@ -507,6 +516,7 @@
     <MESSAGE value="File upload for results and dataset working" />
     <MESSAGE value="File upload and download for results and dataset working, still issues" />
     <MESSAGE value="Changes made:&#10;1. took out the download aspect on my proposal.&#10;2. Got search rolling to be able to download both data and results.&#10;3. changed to update or create in uploading both data and result files" />
-    <option name="LAST_COMMIT_MESSAGE" value="Changes made:&#10;1. took out the download aspect on my proposal.&#10;2. Got search rolling to be able to download both data and results.&#10;3. changed to update or create in uploading both data and result files" />
+    <MESSAGE value="Download and Upload arew working for both result and data files" />
+    <option name="LAST_COMMIT_MESSAGE" value="Download and Upload arew working for both result and data files" />
   </component>
 </project>

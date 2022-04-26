@@ -1,7 +1,7 @@
 import datetime
 from itertools import chain
 import zipfile
-from django.http import FileResponse, HttpResponse
+from django.http import FileResponse, HttpResponse, HttpResponseNotFound
 from pytz import timezone
 from django.db.models import Q
 from django.shortcuts import render, redirect
@@ -114,8 +114,8 @@ def ProjectDetail(request):
 def SearchRequest(request):
     context = initialize_context(request)
     user = context['user']
-    if request.method == 'GET':
-        projectName = request.GET.get("search")
+    projectName = request.GET.get("search")
+    if projectName:
         projects = Project.objects.filter(
             Q(projectTitle__icontains=projectName, approval=True) | Q(projectAuthor__icontains=projectName,
                                                                       approval=True))

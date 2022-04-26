@@ -39,7 +39,7 @@
                     <td><a href="{{ item.proposalFile.url}}" download="{{ item.proposalFile.url }}"><button type="button">Download</button></a>
                     </td>
                     <td>
-                        <td><a href="/dataFiles?title={{ each_project.projectTitle }}">Download Data</a></td>
+                        <td><a href="/dataFiles?title={{ item.projectTitle }}">Download Data</a></td>
                         <form method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <input type="hidden" name="type" value="1">
@@ -50,7 +50,7 @@
                         </form>
                     </td>
                     <td>
-                         <td><a href="/resultFiles?title={{ each_project.projectTitle }}">Download Results</a></td>
+                         <td><a href="/resultFiles?title={{ item.projectTitle }}">Download Results</a></td>
                         <form method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <input type="hidden" name="type" value="2">
