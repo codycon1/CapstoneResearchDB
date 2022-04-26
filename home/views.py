@@ -1,7 +1,7 @@
 import datetime
 from itertools import chain
 import zipfile
-from django.http import FileResponse
+from django.http import FileResponse, HttpResponse
 from pytz import timezone
 from django.db.models import Q
 from django.shortcuts import render, redirect
@@ -35,6 +35,34 @@ def home(request):
 #     return render(request, 'newproposal.html', context)
 
 
+def getDataSetFiles(request):
+    title = request.GET.get('title')
+    dataFiles = ProjectFile.objects.filter(
+        projectID__in=Project.objects.filter(projectTitle=title)).values('dataFile')
+    fileName = 'projects/projects/datasets/' + title + '.zip'
+    zipFileObj = zipfile.ZipFile(fileName, 'w')
+    for file in dataFiles:
+        for i in file:
+            zipFileObj.write('projects/' + file[i])
+    zipFileObj.close()
+    zip_file = open(fileName, 'rb')
+    return FileResponse(zip_file)
+
+
+def getResultFiles(request):
+    title = request.GET.get('title')
+    resultFiles = ResultFile.objects.filter(
+        projectID__in=Project.objects.filter(projectTitle=title)).values('resultFile')
+    fileName = 'projects/projects/results' + title + '.zip'
+    zipFileObj = zipfile.ZipFile(fileName, 'w')
+    for file in resultFiles:
+        for i in file:
+            zipFileObj.write('projects/' + file[i])
+    zipFileObj.close()
+    zip_file = open(fileName, 'rb')
+    return FileResponse(zip_file)
+
+
 def viewSubmissions(request):
     dataSets = []
     userInfo = request.session
@@ -51,7 +79,7 @@ def viewSubmissions(request):
                 obj, created = ProjectFile.objects.update_or_create(
                     projectID=Project(id=id, projectTitle=projectTitle, email=request.session['user']['email']),
                     dataFile=file, type=filetype, userEmail=userInfo['user']['email'])
-            obj.save()
+                obj.save()
             return render(request, 'myproposals.html', context={
                 'accepted': Project.objects.filter(approval=True, email=userInfo['user']['email']),
                 'pending': Project.objects.filter(approval=False, email=userInfo['user']['email']),

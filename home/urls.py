@@ -33,4 +33,6 @@ urlpatterns = [
                   path('changeApproval/', views.approveProposal, name="changeApproval"),
                   path('Unauthorized/', views.unauthorized, name="unauthorized"),
                   path('projectdetail/', views.projectDetail, name="projectDetail"),
+                  path('dataFiles/', views.getDataSetFiles, name="dataFiles"),
+                  path('resultFiles/', views.getResultFiles, name='resultFiles')
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

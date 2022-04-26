@@ -21,30 +21,12 @@
     <tbody>
     {% for each_project in projects %}
         <tr>
-         {%  if each_project.dataFile %}
-             {% if each_project.resultFile %}
             <td>{{ each_project.projectTitle }}</td>
             <td>{{ each_project.projectAuthor }}</td>
             <td>{{ each_project.date }}</td>
-            <td><a href="{{ each_project.proposalFile.url}}"><button type="button">Download</button></a></td>
-            <td><a href="{{ each_project.dataFile.url}}"><button type="button">Download Data</button></a></td>
-            <td><a href="{{ each_project.resultFile.url }}"><button type="button">Download Results</button></a></td>
-            {% else %}
-             <td>{{ each_project.projectTitle }}</td>
-            <td>{{ each_project.projectAuthor }}</td>
-            <td>{{ each_project.date }}</td>
-             <td><a href="{{ each_project.proposalFile.url}}"><button type="button">Download</button></a></td>
-             <td><p>No data available yet</p></td>
-            <td><p>No results yet</p></td>
-        {% endif %}
-        {% else %}
-              <td>{{ each_project.projectTitle }}</td>
-              <td>{{ each_project.projectAuthor }}</td>
-              <td>{{ each_project.date }}</td>
-              <td><a href="{{ each_project.proposalFile.url}}"><button type="button">Download</button></a></td>
-             <td><p>No data available yet</p></td>
-             <td><a href="{{ each_project.resultFile.url }}"><button type="button">Download Results</button></a></td>
-        {% endif %}
+            <td><a href="{{ each_project.proposalFile.url}}"><button type="button">Download Proposal</button></a></td>
+            <td><a href="/dataFiles?title={{ each_project.projectTitle }}"><button type="button">Download Data</button></a></td>
+            <td><a href="/resultFiles?title={{ each_project.projectTitle }}"><button type="button">Download Results</button></a></td>
         </tr>
              {% endfor %}
         </tbody>
