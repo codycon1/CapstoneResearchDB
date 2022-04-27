@@ -10,7 +10,6 @@
                 <th>Proposal File</th>
             </tr>
             </thead>
-        <p>If uploading multiple files, compress them in a .zip format</p>
             <tbody>
             {% for item in pending %}
                 <tr>
@@ -39,31 +38,26 @@
                     <td><a href="{{ item.proposalFile.url}}" download="{{ item.proposalFile.url }}"><button type="button">Download</button></a>
                     </td>
                     <td>
-                        <td><a href="/dataFiles?title={{ item.projectTitle }}">Download Data</a></td>
+                        <a href="/dataFiles?title={{ item.projectTitle }}">Download Data</a>
                         <form method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <input type="hidden" name="type" value="1">
                             <input type="hidden" name="id" value="{{ item.id }}">
                             <input type="hidden" name="dataTitle" value="{{ item.projectTitle }}">
-                            <input type="file" name="file" multiple><br><br>
+                            <input type="file" name="file" multiple><br>
                              <input type="submit" name="Upload" value="Upload">
                         </form>
                     </td>
                     <td>
-                         <td><a href="/resultFiles?title={{ item.projectTitle }}">Download Results</a></td>
+                         <a href="/resultFiles?title={{ item.projectTitle }}">Download Results</a>
                         <form method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <input type="hidden" name="type" value="2">
                             <input type="hidden" name="id" value="{{ item.id }}">
                             <input type="file" name="file" multiple><br>
-                            <input type="submit" name="Upload" value="Upload">
+                            <input type="submit" name="Upload3" value="Upload">
                         </form>
                     </td>
-                </tr>
-                <tr>
-                    <td>
-                    </td>
-                    {#                TODO: Hook up these buttons#}
                 </tr>
             {% endfor %}
             </tbody>
