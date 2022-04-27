@@ -7,7 +7,7 @@ class Project(models.Model):
     email = models.EmailField(max_length=256)
     date = models.DateField(auto_now=True)
     projectAuthor = models.CharField(max_length=128)
-    projectTitle = models.CharField(max_length=100, verbose_name="Project Title")
+    projectTitle = models.CharField(max_length=100, verbose_name="Project Title", unique=True)
     projectDescription = models.CharField(max_length=256, verbose_name="Project Description")
     proposalFile = models.FileField(
         validators=[FileExtensionValidator(

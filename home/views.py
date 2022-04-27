@@ -1,6 +1,8 @@
 import datetime
 from itertools import chain
 import zipfile
+
+from django.core.exceptions import ValidationError
 from django.http import FileResponse, HttpResponse, HttpResponseNotFound
 from pytz import timezone
 from django.db.models import Q
@@ -9,6 +11,7 @@ from zipfile import *
 from users.views import initialize_context
 from .forms import *
 from .models import *
+
 
 
 # Create your views here.
@@ -100,13 +103,12 @@ def viewSubmissions(request):
 
 
 def ProjectDetail(request):
-    projectID = request.GET.get('id', default=None)
+    projectID = request.GET.get('title', default=None)
     print(projectID)
     if projectID is None:
         return redirect('/')
-    project_instance = Project.objects.get(pk=id)
+    project_instance = Project.objects.get(projectTitle=projectID)
     print(project_instance.projectTitle)
-
     context = {}
     return render(request, 'projectdetail.html', context)
 
@@ -153,8 +155,8 @@ def saveFileUpload(request):
                     return render(request, 'fileupload.html',
                                   {'form': form, 'project_info': project_info, 'user': context['user']})
                 else:
-                    form = UploadFileForm()
-                return render(request, 'fileupload.html', {'form': form, 'user': context['user']})
+                    raise ValidationError(form.errors)
+            return render(request, 'fileupload.html', {'form': UploadFileForm, 'user': context['user']})
         except Exception as identifier:
             print(identifier)
         return render(request, 'fileupload.html', {'form': form, 'user': context['user']})

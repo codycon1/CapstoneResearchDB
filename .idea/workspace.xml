@@ -7,9 +7,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2b02c2c1-1613-4822-a35f-dc76262b1d25" name="Changes" comment="Cleaned up search functionality">
+    <list default="true" id="2b02c2c1-1613-4822-a35f-dc76262b1d25" name="Changes" comment="Fixed table issue">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/myproposals.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/myproposals.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/home/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/home/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/home/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/home/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -195,7 +196,7 @@
       <workItem from="1650992179314" duration="8901000" />
       <workItem from="1651008827772" duration="2579000" />
       <workItem from="1651012890011" duration="4052000" />
-      <workItem from="1651078622359" duration="671000" />
+      <workItem from="1651078622359" duration="1322000" />
     </task>
     <task id="LOCAL-00001" summary="Made upload form and file model">
       <created>1644863885539</created>
@@ -477,7 +478,14 @@
       <option name="project" value="LOCAL" />
       <updated>1651017335862</updated>
     </task>
-    <option name="localTasksCounter" value="41" />
+    <task id="LOCAL-00041" summary="Fixed table issue">
+      <created>1651079717337</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1651079717337</updated>
+    </task>
+    <option name="localTasksCounter" value="42" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -495,7 +503,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Some kinks worked out" />
     <MESSAGE value="the core flow of the database is working, from uploading projects, to approving them, and searching them." />
     <MESSAGE value="Getting microsoft oauth implemented, work in progress" />
     <MESSAGE value="Still some kinks needed to workouti in Ouath2" />
@@ -520,6 +527,7 @@
     <MESSAGE value="Changes made:&#10;1. took out the download aspect on my proposal.&#10;2. Got search rolling to be able to download both data and results.&#10;3. changed to update or create in uploading both data and result files" />
     <MESSAGE value="Download and Upload arew working for both result and data files" />
     <MESSAGE value="Cleaned up search functionality" />
-    <option name="LAST_COMMIT_MESSAGE" value="Cleaned up search functionality" />
+    <MESSAGE value="Fixed table issue" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed table issue" />
   </component>
 </project>
