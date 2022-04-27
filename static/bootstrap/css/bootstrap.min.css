@@ -4610,9 +4610,6 @@ textarea.form-control-lg {
     padding: 0;
     overflow-y: visible
 }
-td:empty{
-    visibility: hidden;
-}
 .navbar-light .navbar-brand {
     color: rgba(0, 0, 0, .9)
 }

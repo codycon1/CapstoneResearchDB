@@ -121,17 +121,8 @@ def SearchRequest(request):
         projects = Project.objects.filter(
             Q(projectTitle__icontains=projectName, approval=True) | Q(projectAuthor__icontains=projectName,
                                                                       approval=True))
-        datasets = ProjectFile.objects.filter(
-            Q(projectID__in=Project.objects.filter(projectTitle__icontains=projectName, approval=True)) | Q(
-                projectID__in=Project.objects.filter(projectAuthor__icontains=projectName,
-                                                     approval=True)))
-        results = ResultFile.objects.filter(
-            Q(projectID__in=Project.objects.filter(projectTitle__icontains=projectName, approval=True)) | Q(
-                projectID__in=Project.objects.filter(projectAuthor__icontains=projectName,
-                                                     approval=True)))
-        status = chain(projects, datasets, results)
         return render(request, "SearchResults.html",
-                      {"projects": status, 'user': user})
+                      {"projects": projects, 'user': user})
     else:
         return render(request, "SearchResults.html", {'user': user})
 

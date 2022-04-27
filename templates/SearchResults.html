@@ -5,15 +5,13 @@
     <title>Search Results</title>
 </head>
     <body>
-    <h1>Results Found</h1>
      {% if projects %}
-         <script>
-            document.write({{ projects.length }})
-         </script>
+             <h2>Results Found</h2>
     <table>
     <thead>
         <tr>
             <th>Title of project</th>
+            <th>Project Description</th>
             <th>Author of project</th>
             <th>Project date</th>
             <th>Project Files</th>
@@ -25,6 +23,7 @@
     {% for each_project in projects %}
         <tr>
             <td>{{each_project.projectTitle}}</td>
+            <td>{{ each_project.projectDescription }}</td>
             <td>{{each_project.projectAuthor}}</td>
             <td>{{ each_project.date }}</td>
             <td><a href="{{ each_project.proposalFile.url }}"><button type="button">Download Proposal</button></a></td>
