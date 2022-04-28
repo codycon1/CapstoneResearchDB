@@ -2,6 +2,11 @@
 {% block content %}
     <div id="container">
         <h1>My Proposals</h1>
+            {% if errors %}
+                <ul>
+                    <li>{{ errors }}</li>
+                </ul>
+            {% endif %}
         <table>
             <thead>
             <tr>

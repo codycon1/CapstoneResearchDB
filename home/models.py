@@ -30,7 +30,6 @@ class ProjectFile(models.Model):
         validators=[
             FileExtensionValidator(
                 allowed_extensions=['pdf', 'doc', 'csv', 'xlsx', 'docx', 'txt'])],
-        # TODO: Remove .txt
         upload_to='projects/datasets', verbose_name="datasets")
     # 0 = proposal, 1 = data, 2 = results
     type = models.IntegerField(blank=True, default=0)

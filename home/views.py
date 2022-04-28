@@ -13,7 +13,6 @@ from .forms import *
 from .models import *
 
 
-
 # Create your views here.
 def home(request):
     context = initialize_context(request)
@@ -67,7 +66,7 @@ def getResultFiles(request):
 
 
 def viewSubmissions(request):
-    dataSets = []
+    fileExtensions = ['pdf', 'doc', 'csv', 'xlsx', 'docx', 'txt']
     userInfo = request.session
     if request.method == 'POST':
         file = request.POST.get('file', None)
@@ -78,24 +77,43 @@ def viewSubmissions(request):
         filetype = int(filetype)
         projectTitle = request.POST.get('dataTitle')
         if file is not None and filetype == 1:
-            for file in request.FILES.getlist('file'):
-                obj, created = ProjectFile.objects.update_or_create(
-                    projectID=Project(id=id, projectTitle=projectTitle, email=request.session['user']['email']),
-                    dataFile=file, type=filetype, userEmail=userInfo['user']['email'])
-                obj.save()
+            filename = file.name
+            for i in fileExtensions:
+                if filename.endswith(i):
+                    for file in request.FILES.getlist('file'):
+                        obj, created = ProjectFile.objects.update_or_create(
+                            projectID=Project(id=id, projectTitle=projectTitle, email=request.session['user']['email']),
+                            dataFile=file, type=filetype, userEmail=userInfo['user']['email'])
+                        obj.save()
+                else:
+                    return render(request, 'myproposals.html', context={
+                        'accepted': Project.objects.filter(approval=True, email=userInfo['user']['email']),
+                        'pending': Project.objects.filter(approval=False, email=userInfo['user']['email']),
+                        'user': userInfo['user'], 'errors': 'Data file must be of type pdf,doc,csv,xlsx,docx,txt'})
             return render(request, 'myproposals.html', context={
                 'accepted': Project.objects.filter(approval=True, email=userInfo['user']['email']),
                 'pending': Project.objects.filter(approval=False, email=userInfo['user']['email']),
                 'user': userInfo['user']})
         if file is not None and filetype == 2:
-            obj, created = ResultFile.objects.update_or_create(
-                projectID=Project(id=id, projectTitle=projectTitle, email=request.session['user']['email']),
-                resultFile=file, type=filetype, userEmail=request.session['user']['email'])
-            obj.save()
-            return render(request, 'myproposals.html',
-                          context={'accepted': Project.objects.filter(approval=True, email=userInfo['user']['email']),
-                                   'pending': Project.objects.filter(approval=False, email=userInfo['user']['email']),
-                                   'user': userInfo['user']})
+            filename = file.name
+            for i in fileExtensions:
+                if filename.endswith(i):
+                    for file in request.FILES.getlist('file'):
+                        obj, created = ResultFile.objects.update_or_create(
+                            projectID=Project(id=id, projectTitle=projectTitle, email=request.session['user']['email']),
+                            resultFile=file, type=filetype, userEmail=request.session['user']['email'])
+                        obj.save()
+                    return render(request, 'myproposals.html',
+                                  context={'accepted': Project.objects.filter(approval=True,
+                                                                              email=userInfo['user']['email']),
+                                           'pending': Project.objects.filter(approval=False,
+                                                                             email=userInfo['user']['email']),
+                                           'user': userInfo['user']})
+                else:
+                    return render(request, 'myproposals.html', context={
+                        'accepted': Project.objects.filter(approval=True, email=userInfo['user']['email']),
+                        'pending': Project.objects.filter(approval=False, email=userInfo['user']['email']),
+                        'user': userInfo['user'], 'errors': ' Result file must be of type pdf,doc,csv,xlsx,docx,txt'})
     return render(request, 'myproposals.html',
                   context={'accepted': Project.objects.filter(approval=True, email=userInfo['user']['email']),
                            'pending': Project.objects.filter(approval=False, email=userInfo['user']['email']),
