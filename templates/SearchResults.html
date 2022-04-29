@@ -14,7 +14,8 @@
             <th>Project Description</th>
             <th>Author of project</th>
             <th>Project date</th>
-            <th>Project Files</th>
+            <th>Proposal Files</th>
+            <th>General Files</th>
             <th>Data Files</th>
             <th>Result files</th>
         </tr>
@@ -27,6 +28,7 @@
             <td>{{each_project.projectAuthor}}</td>
             <td>{{ each_project.date }}</td>
             <td><a href="{{ each_project.proposalFile.url }}"><button type="button">Download Proposal</button></a></td>
+            <td><a href="/generalFiles?title={{ each_project.projectTitle}}"><button type="button">Download Data</button></a></td>
             <td><a href="/dataFiles?title={{ each_project.projectTitle}}"><button type="button">Download Data</button></a></td>
              <td><a href="/resultFiles?title={{ each_project.projectTitle}}"><button type="button">Download Results</button></a></td>
         </tr>

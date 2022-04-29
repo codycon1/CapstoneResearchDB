@@ -1,5 +1,0 @@
-TODO:
-Detail page needs to have elements sorted
-Add remove buttons to detail page
-
-Refactor the download functions

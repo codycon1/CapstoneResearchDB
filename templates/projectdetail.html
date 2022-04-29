@@ -25,7 +25,7 @@
         </ul>
         <hr>
 
-        <a href="/dataFiles?title={{ item.projectTitle }}">Download Data</a>
+        <a href="/dataFiles?title={{ project.projectTitle }}">Download Data</a>
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
@@ -41,7 +41,7 @@
         </ul>
 
         <hr>
-        <a href="/resultFiles?title={{ item.projectTitle }}">Download Results</a>
+        <a href="/resultFiles?title={{ project.projectTitle }}">Download Results</a>
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
