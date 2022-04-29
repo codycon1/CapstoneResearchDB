@@ -4,7 +4,7 @@ from .models import Project, ProjectFile
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ["projectTitle", "projectAuthor",]
+    list_display = ["id", "projectTitle", "projectAuthor",]
 
 
 @admin.register(ProjectFile)

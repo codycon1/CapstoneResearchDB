@@ -5,20 +5,6 @@ from django.forms.widgets import ClearableFileInput
 from .models import *
 
 
-# class SubmitProposalForm(forms.ModelForm):
-#     class Meta:
-#         model = Proposal
-#         fields = [
-#             'title',
-#             'description',
-#         ]
-#
-#     def __str__(self):
-#         return self.title
-#
-#     # Default approval and user to false / current login user
-
-
 class editProjectForm(forms.ModelForm):
     class Meta:
         model = Project
@@ -31,16 +17,10 @@ class UploadFileForm(forms.ModelForm):
         fields = ('projectTitle', 'projectDescription', 'proposalFile')
 
 
-class UploadDataFiles(forms.ModelForm):
+class UploadProjectFile(forms.ModelForm):
     class Meta:
         model = ProjectFile
-        fields = ('dataFile',)
-
-
-class UploadResultFiles(forms.ModelForm):
-    class Meta:
-        model = ResultFile
-        fields = ('resultFile',)
+        fields = ('file', )
 
 
 class SignupForm(UserCreationForm):

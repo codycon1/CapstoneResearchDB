@@ -26,27 +26,12 @@ class Project(models.Model):
 class ProjectFile(models.Model):
     projectID = models.ForeignKey(Project, on_delete=models.CASCADE)
     userEmail = models.EmailField(max_length=256)
-    dataFile = models.FileField(
+    file = models.FileField(
         validators=[
             FileExtensionValidator(
                 allowed_extensions=['pdf', 'doc', 'csv', 'xlsx', 'docx', 'txt'])],
         upload_to='projects/datasets', verbose_name="datasets")
-    # 0 = proposal, 1 = data, 2 = results
-    type = models.IntegerField(blank=True, default=0)
-    uploadDate = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return str(self.id)
-
-
-class ResultFile(models.Model):
-    projectID = models.ForeignKey(Project, on_delete=models.CASCADE)
-    userEmail = models.EmailField(max_length=256)
-    resultFile = models.FileField(
-        validators=[FileExtensionValidator(allowed_extensions=['pdf', 'doc', 'csv', 'xlsx', 'docx', 'txt'])],
-        # TODO: Remove .txt
-        upload_to='projects/results', verbose_name="results")
-    # 0 = proposal, 1 = data, 2 = results
+    # 0 = general, 1 = data, 2 = results
     type = models.IntegerField(blank=True, default=0)
     uploadDate = models.DateTimeField(auto_now=True)
 

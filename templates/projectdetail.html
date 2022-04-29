@@ -1,13 +1,59 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h4 class="">{{ project.projectTitle }}</h4>
-    {{ project.projectDescription }}
-    {{ project.projectAuthor }}
+    <div id="container">
+        <h3>{{ project.projectTitle }}</h3>
+        <h4>{{ project.projectDescription }}</h4>
 
-    <h5 class="">Files</h5>
-    {% for item in files %}
-        {{ item.userEmail }}
-        {{ item.file.url }}
-    {% endfor %}
+        <hr>
+
+        <h5>General files</h5>
+
+        <a href="/generalFiles?title={{ project.projectTitle }}">Download General</a>
+        <form method="POST" enctype="multipart/form-data" action="/submissions/">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="hidden" name="id" value="{{ item.id }}">
+            <input type="hidden" name="type" value="0">
+            <button type="submit" class="btn btn-primary">submit</button>
+        </form>
+
+        <ul>
+            {% for item in general %}
+                <li>{{ item.file }}</li>
+            {% endfor %}
+        </ul>
+        <hr>
+
+        <a href="/dataFiles?title={{ item.projectTitle }}">Download Data</a>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="hidden" name="id" value="{{ item.id }}">
+            <input type="hidden" name="type" value="1">
+            <button type="submit" class="btn btn-primary">submit</button>
+        </form>
+
+        <ul>
+            {% for item in data %}
+                <li>{{ item.file }}</li>
+            {% endfor %}
+        </ul>
+
+        <hr>
+        <a href="/resultFiles?title={{ item.projectTitle }}">Download Results</a>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="hidden" name="id" value="{{ item.id }}">
+            <input type="hidden" name="type" value="2">
+            <button type="submit" class="btn btn-primary">submit</button>
+        </form>
+
+        <ul>
+            {% for item in result %}
+                <li>{{ item.file }}</li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}

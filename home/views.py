@@ -19,28 +19,24 @@ def home(request):
     return render(request, 'home.html', context)
 
 
-# def submit_proposal(request):
-#     context = initialize_context(request)
-#     user = request.session
-#     if request.method == 'POST':
-#         form = SubmitProposalForm(request.POST)
-#         if form.is_valid():
-#             p = form.save(commit=False)
-#             p.author = user['user']['name']
-#             p.email = user['user']['email']
-#             p.save()
-#             return redirect('/')
-#     else:
-#         form = SubmitProposalForm()
-#
-#     context['form'] = form
-#     return render(request, 'newproposal.html', context)
+def getGeneralFiles(request):
+    title = request.GET.get('title')
+    dataFiles = ProjectFile.objects.filter(
+        projectID__in=Project.objects.filter(projectTitle=title)).values('file')
+    fileName = 'projects/projects/datasets/' + title + '.zip'
+    zipFileObj = zipfile.ZipFile(fileName, 'w')
+    for file in dataFiles:
+        for i in file:
+            zipFileObj.write('projects/' + file[i])
+    zipFileObj.close()
+    zip_file = open(fileName, 'rb')
+    return FileResponse(zip_file)
 
 
 def getDataSetFiles(request):
     title = request.GET.get('title')
     dataFiles = ProjectFile.objects.filter(
-        projectID__in=Project.objects.filter(projectTitle=title)).values('dataFile')
+        projectID__in=Project.objects.filter(projectTitle=title)).values('file')
     fileName = 'projects/projects/datasets/' + title + '.zip'
     zipFileObj = zipfile.ZipFile(fileName, 'w')
     for file in dataFiles:
@@ -53,8 +49,8 @@ def getDataSetFiles(request):
 
 def getResultFiles(request):
     title = request.GET.get('title')
-    resultFiles = ResultFile.objects.filter(
-        projectID__in=Project.objects.filter(projectTitle=title)).values('resultFile')
+    resultFiles = ProjectFile.objects.filter(
+        projectID__in=Project.objects.filter(projectTitle=title)).values('file')
     fileName = 'projects/projects/results' + title + '.zip'
     zipFileObj = zipfile.ZipFile(fileName, 'w')
     for file in resultFiles:
@@ -66,68 +62,53 @@ def getResultFiles(request):
 
 
 def viewSubmissions(request):
-    fileExtensions = ['pdf', 'doc', 'csv', 'xlsx', 'docx', 'txt']
     userInfo = request.session
+    uploadForm = UploadProjectFile(request.POST, request.FILES)
+    context = {'form': uploadForm, }
     if request.method == 'POST':
-        file = request.POST.get('file', None)
-        filetype = request.POST.get('type', None)
-        id = request.POST.get('id', None)
-        file = request.FILES['file']
-        id = int(id)
-        filetype = int(filetype)
-        projectTitle = request.POST.get('dataTitle')
-        if file is not None and filetype == 1:
-            filename = file.name
-            for i in fileExtensions:
-                if filename.endswith(i):
-                    for file in request.FILES.getlist('file'):
-                        obj, created = ProjectFile.objects.update_or_create(
-                            projectID=Project(id=id, projectTitle=projectTitle, email=request.session['user']['email']),
-                            dataFile=file, type=filetype, userEmail=userInfo['user']['email'])
-                        obj.save()
-                else:
-                    return render(request, 'myproposals.html', context={
-                        'accepted': Project.objects.filter(approval=True, email=userInfo['user']['email']),
-                        'pending': Project.objects.filter(approval=False, email=userInfo['user']['email']),
-                        'user': userInfo['user'], 'errors': 'Data file must be of type pdf,doc,csv,xlsx,docx,txt'})
-            return render(request, 'myproposals.html', context={
-                'accepted': Project.objects.filter(approval=True, email=userInfo['user']['email']),
-                'pending': Project.objects.filter(approval=False, email=userInfo['user']['email']),
-                'user': userInfo['user']})
-        if file is not None and filetype == 2:
-            filename = file.name
-            for i in fileExtensions:
-                if filename.endswith(i):
-                    for file in request.FILES.getlist('file'):
-                        obj, created = ResultFile.objects.update_or_create(
-                            projectID=Project(id=id, projectTitle=projectTitle, email=request.session['user']['email']),
-                            resultFile=file, type=filetype, userEmail=request.session['user']['email'])
-                        obj.save()
-                    return render(request, 'myproposals.html',
-                                  context={'accepted': Project.objects.filter(approval=True,
-                                                                              email=userInfo['user']['email']),
-                                           'pending': Project.objects.filter(approval=False,
-                                                                             email=userInfo['user']['email']),
-                                           'user': userInfo['user']})
-                else:
-                    return render(request, 'myproposals.html', context={
-                        'accepted': Project.objects.filter(approval=True, email=userInfo['user']['email']),
-                        'pending': Project.objects.filter(approval=False, email=userInfo['user']['email']),
-                        'user': userInfo['user'], 'errors': ' Result file must be of type pdf,doc,csv,xlsx,docx,txt'})
+        # try:
+        uploadForm = UploadProjectFile(request.POST, request.FILES)
+        authorEmail = request.session['user']['email']
+
+        if uploadForm.is_valid():
+            formdata = uploadForm.save(commit=False)
+            formdata.userEmail = authorEmail
+            id = request.POST.get('id', None)
+            formdata.projectID = Project.objects.get(id=id)
+            formdata.type = request.POST.get('type', None)
+            formdata.save()
+    # except:
+    #     return render(request, 'myproposals.html', context)
+
     return render(request, 'myproposals.html',
                   context={'accepted': Project.objects.filter(approval=True, email=userInfo['user']['email']),
                            'pending': Project.objects.filter(approval=False, email=userInfo['user']['email']),
-                           'user': userInfo['user']})
+                           'user': userInfo['user'], 'form': uploadForm})
 
 
 def ProjectDetail(request):
-    projectID = request.GET.get('title', default=None)
-    print(projectID)
+    context = initialize_context(request)
+    projectID = request.GET.get('id', default=None)
     if projectID is None:
         return redirect('/')
-    project_instance = Project.objects.get(projectTitle=projectID)
-    print(project_instance.projectTitle)
-    context = {}
+    project_instance = Project.objects.get(id=projectID)
+
+    if project_instance.email != request.session['user']['email']:
+        return redirect('/submissions')
+
+    project_generalfiles = ProjectFile.objects.filter(projectID_id=projectID, type=0)
+    project_datafiles = ProjectFile.objects.filter(projectID_id=projectID, type=1)
+    project_resultfiles = ProjectFile.objects.filter(projectID_id=projectID, type=2)
+
+    uploadForm = UploadProjectFile()
+
+
+    context['user'] = request.session['user']
+    context['project'] = project_instance
+    context['general'] = project_generalfiles
+    context['data'] = project_datafiles
+    context['result'] = project_resultfiles
+
     return render(request, 'projectdetail.html', context)
 
 
@@ -195,7 +176,3 @@ def approveProposal(request):
         else:
             pass
     return render(request, 'approveproposal.html', context)
-
-
-def projectDetail(request):
-    return None

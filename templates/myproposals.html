@@ -2,11 +2,11 @@
 {% block content %}
     <div id="container">
         <h1>My Proposals</h1>
-            {% if errors %}
-                <ul>
-                    <li>{{ errors }}</li>
-                </ul>
-            {% endif %}
+        {% if errors %}
+            <ul>
+                <li>{{ errors }}</li>
+            </ul>
+        {% endif %}
         <table>
             <thead>
             <tr>
@@ -38,29 +38,37 @@
             <tbody>
             {% for item in accepted %}
                 <tr>
-                <td><a href="/projectdetail?id={{ item.id }}">{{ item.projectTitle }}</a></td>
+                    <td><a href="/projectdetail?id={{ item.id }}">{{ item.projectTitle }}</a></td>
                     <td>{{ item.projectDescription }}</td>
-                    <td><a href="{{ item.proposalFile.url}}" download="{{ item.proposalFile.url }}"><button type="button">Download</button></a>
+                    <td><a href="{{ item.proposalFile.url }}" download="{{ item.proposalFile.url }}">
+                        <a href="/dataFiles?title={{ item.projectTitle }}">Download Data</a>
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <input type="hidden" name="id" value="{{ item.id }}">
+                            <input type="hidden" name="type" value="0">
+                            <button type="submit" class="btn btn-primary">submit</button>
+                        </form>
+                    </a>
                     </td>
                     <td>
                         <a href="/dataFiles?title={{ item.projectTitle }}">Download Data</a>
-                        <form method="post" enctype="multipart/form-data">
+                        <form method="POST" enctype="multipart/form-data">
                             {% csrf_token %}
-                            <input type="hidden" name="type" value="1">
+                            {{ form.as_p }}
                             <input type="hidden" name="id" value="{{ item.id }}">
-                            <input type="hidden" name="dataTitle" value="{{ item.projectTitle }}">
-                            <input type="file" name="file" multiple><br>
-                             <input type="submit" name="Upload" value="Upload">
+                            <input type="hidden" name="type" value="1">
+                            <button type="submit" class="btn btn-primary">submit</button>
                         </form>
                     </td>
                     <td>
-                         <a href="/resultFiles?title={{ item.projectTitle }}">Download Results</a>
-                        <form method="post" enctype="multipart/form-data">
+                        <a href="/resultFiles?title={{ item.projectTitle }}">Download Results</a>
+                        <form method="POST" enctype="multipart/form-data">
                             {% csrf_token %}
-                            <input type="hidden" name="type" value="2">
+                            {{ form.as_p }}
                             <input type="hidden" name="id" value="{{ item.id }}">
-                            <input type="file" name="file" multiple><br>
-                            <input type="submit" name="Upload3" value="Upload">
+                            <input type="hidden" name="type" value="2">
+                            <button type="submit" class="btn btn-primary">submit</button>
                         </form>
                     </td>
                 </tr>
