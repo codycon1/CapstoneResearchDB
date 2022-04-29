@@ -1,1 +1,3 @@
 /oauth_settings.yml
+/home/migrations/0001_initial.py
+/users/migrations/0001_initial.py

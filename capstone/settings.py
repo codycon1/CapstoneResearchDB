@@ -36,7 +36,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'home',
     'users',
-    'microsoft_authentication',
 ]
 MEDIA_ROOT = os.path.join(BASE_DIR, 'projects')
 MEDIA_URL = 'projects/'

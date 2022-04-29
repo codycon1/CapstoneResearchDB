@@ -22,9 +22,7 @@ def home(request):
 def getGeneralFiles(request):
     title = request.GET.get('title')
     dataFiles = ProjectFile.objects.filter(
-        projectID__in=Project.objects.filter(projectTitle=title),
-        type = 0
-    ).values('file')
+        projectID__in=Project.objects.filter(projectTitle=title)).values('file')
     fileName = 'projects/projects/datasets/' + title + '.zip'
     zipFileObj = zipfile.ZipFile(fileName, 'w')
     for file in dataFiles:
@@ -38,9 +36,7 @@ def getGeneralFiles(request):
 def getDataSetFiles(request):
     title = request.GET.get('title')
     dataFiles = ProjectFile.objects.filter(
-        projectID__in=Project.objects.filter(projectTitle=title),
-        type = 1
-    ).values('file')
+        projectID__in=Project.objects.filter(projectTitle=title)).values('file')
     fileName = 'projects/projects/datasets/' + title + '.zip'
     zipFileObj = zipfile.ZipFile(fileName, 'w')
     for file in dataFiles:
@@ -53,13 +49,11 @@ def getDataSetFiles(request):
 
 def getResultFiles(request):
     title = request.GET.get('title')
-    dataFiles = ProjectFile.objects.filter(
-        projectID__in=Project.objects.filter(projectTitle=title),
-        type = 2
-    ).values('file')
-    fileName = 'projects/projects/datasets/' + title + '.zip'
+    resultFiles = ProjectFile.objects.filter(
+        projectID__in=Project.objects.filter(projectTitle=title)).values('file')
+    fileName = 'projects/projects/results' + title + '.zip'
     zipFileObj = zipfile.ZipFile(fileName, 'w')
-    for file in dataFiles:
+    for file in resultFiles:
         for i in file:
             zipFileObj.write('projects/' + file[i])
     zipFileObj.close()
@@ -101,20 +95,17 @@ def ProjectDetail(request):
 
     if project_instance.email != request.session['user']['email']:
         return redirect('/submissions')
-
     project_generalfiles = ProjectFile.objects.filter(projectID_id=projectID, type=0)
     project_datafiles = ProjectFile.objects.filter(projectID_id=projectID, type=1)
     project_resultfiles = ProjectFile.objects.filter(projectID_id=projectID, type=2)
 
     uploadForm = UploadProjectFile()
-
     context['user'] = request.session['user']
     context['project'] = project_instance
     context['general'] = project_generalfiles
     context['data'] = project_datafiles
     context['result'] = project_resultfiles
     context['form'] = uploadForm
-
     return render(request, 'projectdetail.html', context)
 
 
