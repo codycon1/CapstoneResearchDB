@@ -1,0 +1,334 @@
+Index: templates/myproposals.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{% extends 'base.html' %}\n{% block content %}\n    <div id=\"container\">\n        <h1>My Proposals</h1>\n        {% if errors %}\n            <ul>\n                <li>{{ errors }}</li>\n            </ul>\n        {% endif %}\n        <table>\n            <thead>\n            <tr>\n                <th>Pending</th>\n                <th>Description</th>\n                <th>Proposal File</th>\n            </tr>\n            </thead>\n            <tbody>\n            {% for item in pending %}\n                <tr>\n                    <td>{{ item.projectTitle }}</td>\n                    <td>{{ item.projectDescription }}</td>\n                    <td><a href=\"{{ item.proposalFile.url }}\">\n                        <button type=\"button\">Download</button>\n                    </a></td>\n                </tr>\n            {% endfor %}\n            </tbody>\n            <thead>\n            <tr>\n                <th>Accepted</th>\n                <th>Project Description</th>\n                <th>General project files</th>\n                <th>Data Files</th>\n                <th>Result Files</th>\n            </tr>\n            </thead>\n            <tbody>\n            {% for item in accepted %}\n                <tr>\n                    <td><a href=\"/projectdetail?id={{ item.id }}\">{{ item.projectTitle }}</a></td>\n                    <td>{{ item.projectDescription }}</td>\n                    <td><a href=\"{{ item.proposalFile.url }}\" download=\"{{ item.proposalFile.url }}\">\n                        <a href=\"/dataFiles?title={{ item.projectTitle }}\">Download Data</a>\n                        <form method=\"POST\" enctype=\"multipart/form-data\">\n                            {% csrf_token %}\n                            {{ form.as_p }}\n                            <input type=\"hidden\" name=\"id\" value=\"{{ item.id }}\">\n                            <input type=\"hidden\" name=\"type\" value=\"0\">\n                            <button type=\"submit\" class=\"btn btn-primary\">submit</button>\n                        </form>\n                    </a>\n                    </td>\n                    <td>\n                        <a href=\"/dataFiles?title={{ item.projectTitle }}\">Download Data</a>\n                        <form method=\"POST\" enctype=\"multipart/form-data\">\n                            {% csrf_token %}\n                            {{ form.as_p }}\n                            <input type=\"hidden\" name=\"id\" value=\"{{ item.id }}\">\n                            <input type=\"hidden\" name=\"type\" value=\"1\">\n                            <button type=\"submit\" class=\"btn btn-primary\">submit</button>\n                        </form>\n                    </td>\n                    <td>\n                        <a href=\"/resultFiles?title={{ item.projectTitle }}\">Download Results</a>\n                        <form method=\"POST\" enctype=\"multipart/form-data\">\n                            {% csrf_token %}\n                            {{ form.as_p }}\n                            <input type=\"hidden\" name=\"id\" value=\"{{ item.id }}\">\n                            <input type=\"hidden\" name=\"type\" value=\"2\">\n                            <button type=\"submit\" class=\"btn btn-primary\">submit</button>\n                        </form>\n                    </td>\n                </tr>\n            {% endfor %}\n            </tbody>\n        </table>\n    </div>\n{% endblock %}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/templates/myproposals.html b/templates/myproposals.html
+--- a/templates/myproposals.html	(revision f5a51a48db43de811f38515de551be60a1c59e83)
++++ b/templates/myproposals.html	(date 1651252983931)
+@@ -47,7 +47,7 @@
+                             {{ form.as_p }}
+                             <input type="hidden" name="id" value="{{ item.id }}">
+                             <input type="hidden" name="type" value="0">
+-                            <button type="submit" class="btn btn-primary">submit</button>
++                            <button type="submit">submit</button>
+                         </form>
+                     </a>
+                     </td>
+@@ -58,7 +58,7 @@
+                             {{ form.as_p }}
+                             <input type="hidden" name="id" value="{{ item.id }}">
+                             <input type="hidden" name="type" value="1">
+-                            <button type="submit" class="btn btn-primary">submit</button>
++                            <button type="submit">submit</button>
+                         </form>
+                     </td>
+                     <td>
+@@ -68,7 +68,7 @@
+                             {{ form.as_p }}
+                             <input type="hidden" name="id" value="{{ item.id }}">
+                             <input type="hidden" name="type" value="2">
+-                            <button type="submit" class="btn btn-primary">submit</button>
++                            <button type="submit">submit</button>
+                         </form>
+                     </td>
+                 </tr>
+Index: home/views.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import datetime\nfrom itertools import chain\nimport zipfile\n\nfrom django.core.exceptions import ValidationError\nfrom django.http import FileResponse, HttpResponse, HttpResponseNotFound\nfrom pytz import timezone\nfrom django.db.models import Q\nfrom django.shortcuts import render, redirect\nfrom zipfile import *\nfrom users.views import initialize_context\nfrom .forms import *\nfrom .models import *\n\n\n# Create your views here.\ndef home(request):\n    context = initialize_context(request)\n    return render(request, 'home.html', context)\n\n\ndef getGeneralFiles(request):\n    title = request.GET.get('title')\n    dataFiles = ProjectFile.objects.filter(\n        projectID__in=Project.objects.filter(projectTitle=title)).values('file')\n    fileName = 'projects/projects/datasets/' + title + '.zip'\n    zipFileObj = zipfile.ZipFile(fileName, 'w')\n    for file in dataFiles:\n        for i in file:\n            zipFileObj.write('projects/' + file[i])\n    zipFileObj.close()\n    zip_file = open(fileName, 'rb')\n    return FileResponse(zip_file)\n\n\ndef getDataSetFiles(request):\n    title = request.GET.get('title')\n    dataFiles = ProjectFile.objects.filter(\n        projectID__in=Project.objects.filter(projectTitle=title)).values('file')\n    fileName = 'projects/projects/datasets/' + title + '.zip'\n    zipFileObj = zipfile.ZipFile(fileName, 'w')\n    for file in dataFiles:\n        for i in file:\n            zipFileObj.write('projects/' + file[i])\n    zipFileObj.close()\n    zip_file = open(fileName, 'rb')\n    return FileResponse(zip_file)\n\n\ndef getResultFiles(request):\n    title = request.GET.get('title')\n    resultFiles = ProjectFile.objects.filter(\n        projectID__in=Project.objects.filter(projectTitle=title)).values('file')\n    fileName = 'projects/projects/results' + title + '.zip'\n    zipFileObj = zipfile.ZipFile(fileName, 'w')\n    for file in resultFiles:\n        for i in file:\n            zipFileObj.write('projects/' + file[i])\n    zipFileObj.close()\n    zip_file = open(fileName, 'rb')\n    return FileResponse(zip_file)\n\n\ndef viewSubmissions(request):\n    userInfo = request.session\n    uploadForm = UploadProjectFile(request.POST, request.FILES)\n    context = {'form': uploadForm, }\n    if request.method == 'POST':\n        # try:\n        uploadForm = UploadProjectFile(request.POST, request.FILES)\n        authorEmail = request.session['user']['email']\n\n        if uploadForm.is_valid():\n            formdata = uploadForm.save(commit=False)\n            formdata.userEmail = authorEmail\n            id = request.POST.get('id', None)\n            formdata.projectID = Project.objects.get(id=id)\n            formdata.type = request.POST.get('type', None)\n            formdata.save()\n    # except:\n    #     return render(request, 'myproposals.html', context)\n\n    return render(request, 'myproposals.html',\n                  context={'accepted': Project.objects.filter(approval=True, email=userInfo['user']['email']),\n                           'pending': Project.objects.filter(approval=False, email=userInfo['user']['email']),\n                           'user': userInfo['user'], 'form': uploadForm})\n\n\ndef ProjectDetail(request):\n    context = initialize_context(request)\n    projectID = request.GET.get('id', default=None)\n    if projectID is None:\n        return redirect('/')\n    project_instance = Project.objects.get(id=projectID)\n\n    if project_instance.email != request.session['user']['email']:\n        return redirect('/submissions')\n\n    project_generalfiles = ProjectFile.objects.filter(projectID_id=projectID, type=0)\n    project_datafiles = ProjectFile.objects.filter(projectID_id=projectID, type=1)\n    project_resultfiles = ProjectFile.objects.filter(projectID_id=projectID, type=2)\n\n    uploadForm = UploadProjectFile()\n\n\n    context['user'] = request.session['user']\n    context['project'] = project_instance\n    context['general'] = project_generalfiles\n    context['data'] = project_datafiles\n    context['result'] = project_resultfiles\n\n    return render(request, 'projectdetail.html', context)\n\n\ndef SearchRequest(request):\n    context = initialize_context(request)\n    user = context['user']\n    projectName = request.GET.get(\"search\")\n    if projectName:\n        projects = Project.objects.filter(\n            Q(projectTitle__icontains=projectName, approval=True) | Q(projectAuthor__icontains=projectName,\n                                                                      approval=True))\n        return render(request, \"SearchResults.html\",\n                      {\"projects\": projects, 'user': user})\n    else:\n        return render(request, \"SearchResults.html\", {'user': user})\n\n\ndef saveFileUpload(request):\n    try:\n        context = request.session\n        authorName = context['user']['name']\n        authorEmail = context['user']['email']\n        form = UploadFileForm(\n            initial={'projectAuthor': authorName, 'email': authorEmail})\n        try:\n            if request.method == 'POST':\n                form = UploadFileForm(request.POST, request.FILES)\n                if form.is_valid():\n                    projdata = form.save()\n                    projdata.email = request.session['user']['email']\n                    projdata.projectAuthor = request.session['user']['name']\n                    projdata.save()\n                    project_info = form.instance()\n                    return render(request, 'fileupload.html',\n                                  {'form': form, 'project_info': project_info, 'user': context['user']})\n                else:\n                    raise ValidationError(form.errors)\n            return render(request, 'fileupload.html', {'form': UploadFileForm, 'user': context['user']})\n        except Exception as identifier:\n            print(identifier)\n        return render(request, 'fileupload.html', {'form': form, 'user': context['user']})\n    except:\n        return render(request, 'UnauthorizedPage.html')\n\n\ndef unauthorized(request):\n    return render(request, 'UnauthorizedPage.html')\n\n\ndef approveProposal(request):\n    if not request.session['user']['is_staff']:\n        return redirect('unauthorized')\n    else:\n        userInfo = request.session\n        context = {'pending': Project.objects.filter(approval=False), 'user': userInfo['user']}\n        if request.method == 'POST':\n            id = request.POST.get('id', 0)\n            proposalObject = Project.objects.get(id=request.POST['id'])\n            title = request.POST.get('projectTitle', \"\")\n            if 'approve' in request.POST:\n                proposalObject.approval = True\n                proposalObject.save()\n            elif 'delete' in request.POST:\n                proposalObject.delete()\n        else:\n            pass\n    return render(request, 'approveproposal.html', context)\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/home/views.py b/home/views.py
+--- a/home/views.py	(revision f5a51a48db43de811f38515de551be60a1c59e83)
++++ b/home/views.py	(date 1651254302403)
+@@ -22,7 +22,9 @@
+ def getGeneralFiles(request):
+     title = request.GET.get('title')
+     dataFiles = ProjectFile.objects.filter(
+-        projectID__in=Project.objects.filter(projectTitle=title)).values('file')
++        projectID__in=Project.objects.filter(projectTitle=title),
++        type=0
++    ).values('file')
+     fileName = 'projects/projects/datasets/' + title + '.zip'
+     zipFileObj = zipfile.ZipFile(fileName, 'w')
+     for file in dataFiles:
+@@ -36,7 +38,9 @@
+ def getDataSetFiles(request):
+     title = request.GET.get('title')
+     dataFiles = ProjectFile.objects.filter(
+-        projectID__in=Project.objects.filter(projectTitle=title)).values('file')
++        projectID__in=Project.objects.filter(projectTitle=title),
++        type=1
++    ).values('file')
+     fileName = 'projects/projects/datasets/' + title + '.zip'
+     zipFileObj = zipfile.ZipFile(fileName, 'w')
+     for file in dataFiles:
+@@ -50,7 +54,9 @@
+ def getResultFiles(request):
+     title = request.GET.get('title')
+     resultFiles = ProjectFile.objects.filter(
+-        projectID__in=Project.objects.filter(projectTitle=title)).values('file')
++        projectID__in=Project.objects.filter(projectTitle=title),
++        type=2
++    ).values('file')
+     fileName = 'projects/projects/results' + title + '.zip'
+     zipFileObj = zipfile.ZipFile(fileName, 'w')
+     for file in resultFiles:
+@@ -68,12 +74,11 @@
+     if request.method == 'POST':
+         # try:
+         uploadForm = UploadProjectFile(request.POST, request.FILES)
++        id = request.POST.get('id', None)
+         authorEmail = request.session['user']['email']
+-
+         if uploadForm.is_valid():
+             formdata = uploadForm.save(commit=False)
+             formdata.userEmail = authorEmail
+-            id = request.POST.get('id', None)
+             formdata.projectID = Project.objects.get(id=id)
+             formdata.type = request.POST.get('type', None)
+             formdata.save()
+@@ -92,23 +97,18 @@
+     if projectID is None:
+         return redirect('/')
+     project_instance = Project.objects.get(id=projectID)
+-
+     if project_instance.email != request.session['user']['email']:
+         return redirect('/submissions')
+-
+     project_generalfiles = ProjectFile.objects.filter(projectID_id=projectID, type=0)
+     project_datafiles = ProjectFile.objects.filter(projectID_id=projectID, type=1)
+     project_resultfiles = ProjectFile.objects.filter(projectID_id=projectID, type=2)
+-
+     uploadForm = UploadProjectFile()
+-
+-
+     context['user'] = request.session['user']
+     context['project'] = project_instance
+     context['general'] = project_generalfiles
+     context['data'] = project_datafiles
+     context['result'] = project_resultfiles
+-
++    context['form'] = uploadForm
+     return render(request, 'projectdetail.html', context)
+ 
+ 
+Index: users/views.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import json\n\nfrom django.contrib.auth import authenticate, login, logout\nfrom django.http import HttpResponseRedirect, HttpResponseForbidden\nfrom django.shortcuts import redirect\nfrom django.shortcuts import render\nfrom django.urls import reverse\nfrom auth_helper import get_sign_in_flow, get_token, store_user, remove_user_and_token, get_token_from_code\nfrom graph_helper import *\nfrom capstone import settings\n\n# Create your views here.\n\"\"\"\"\ndef user_signup(request):\n    if request.method == 'POST':\n        form = NewSignupForm(request.POST)\n        if form.is_valid():\n            form.save()\n            user = form.cleaned_data.get('email')\n            raw_password = form.cleaned_data.get('password1')\n            user = authenticate(username=user, password=raw_password)\n            login(request, user)\n            return redirect('/')\n    else:\n        form = NewSignupForm()\n    return render(request, 'registration/signup.html', {'form': form})\n\"\"\"\n\n\ndef initialize_context(request):\n    context = {}\n    error = request.session.pop('flash_error', None)\n    if error is not None:\n        context['errors'] = []\n        context['errors'].append(error)\n    # Check for user in the session\n    context['user'] = request.session.get('user', {'is_authenticated': False})\n    return context\n\n\ndef sign_in(request):\n    # Get the sign-in flow\n    flow = get_sign_in_flow()\n    try:\n        request.session['auth_flow'] = flow\n    except Exception as e:\n        print(e)\n    return HttpResponseRedirect(flow['auth_uri'])\n\n\ndef sign_out(request):\n    remove_user_and_token(request)\n    return HttpResponseRedirect(reverse('home'))\n\n\n# 5f0a4be8-970a-47c2-b074-e3945d20e88f\n# 2c58e05f-8a92-44fc-90e6-1ef89fb96ad3-- Staff\ndef checkStaff(x):\n    for i in x['value']:\n        if i == '2c58e05f-8a92-44fc-90e6-1ef89fb96ad3':\n            return True\n    return False\n\n\ndef callback(request):\n    # Make the token request\n    result = get_token_from_code(request)\n    user = get_user(result['access_token'])\n    isStaff = checkStaff(get_groups(result['access_token']))\n    store_user(request, user, isStaff)\n    return HttpResponseRedirect(reverse('home'))\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/users/views.py b/users/views.py
+--- a/users/views.py	(revision f5a51a48db43de811f38515de551be60a1c59e83)
++++ b/users/views.py	(date 1651253218265)
+@@ -53,8 +53,6 @@
+     return HttpResponseRedirect(reverse('home'))
+ 
+ 
+-# 5f0a4be8-970a-47c2-b074-e3945d20e88f
+-# 2c58e05f-8a92-44fc-90e6-1ef89fb96ad3-- Staff
+ def checkStaff(x):
+     for i in x['value']:
+         if i == '2c58e05f-8a92-44fc-90e6-1ef89fb96ad3':
+Index: templates/projectdetail.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{% extends 'base.html' %}\n\n{% block content %}\n    <div id=\"container\">\n        <h3>{{ project.projectTitle }}</h3>\n        <h4>{{ project.projectDescription }}</h4>\n\n        <hr>\n\n        <h5>General files</h5>\n\n        <a href=\"/generalFiles?title={{ project.projectTitle }}\">Download General</a>\n        <form method=\"POST\" enctype=\"multipart/form-data\" action=\"/submissions/\">\n            {% csrf_token %}\n            {{ form.as_p }}\n            <input type=\"hidden\" name=\"id\" value=\"{{ item.id }}\">\n            <input type=\"hidden\" name=\"type\" value=\"0\">\n            <button type=\"submit\" class=\"btn btn-primary\">submit</button>\n        </form>\n\n        <ul>\n            {% for item in general %}\n                <li>{{ item.file }}</li>\n            {% endfor %}\n        </ul>\n        <hr>\n\n        <a href=\"/dataFiles?title={{ item.projectTitle }}\">Download Data</a>\n        <form method=\"POST\" enctype=\"multipart/form-data\">\n            {% csrf_token %}\n            {{ form.as_p }}\n            <input type=\"hidden\" name=\"id\" value=\"{{ item.id }}\">\n            <input type=\"hidden\" name=\"type\" value=\"1\">\n            <button type=\"submit\" class=\"btn btn-primary\">submit</button>\n        </form>\n\n        <ul>\n            {% for item in data %}\n                <li>{{ item.file }}</li>\n            {% endfor %}\n        </ul>\n\n        <hr>\n        <a href=\"/resultFiles?title={{ item.projectTitle }}\">Download Results</a>\n        <form method=\"POST\" enctype=\"multipart/form-data\">\n            {% csrf_token %}\n            {{ form.as_p }}\n            <input type=\"hidden\" name=\"id\" value=\"{{ item.id }}\">\n            <input type=\"hidden\" name=\"type\" value=\"2\">\n            <button type=\"submit\" class=\"btn btn-primary\">submit</button>\n        </form>\n\n        <ul>\n            {% for item in result %}\n                <li>{{ item.file }}</li>\n            {% endfor %}\n        </ul>\n    </div>\n{% endblock %}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/templates/projectdetail.html b/templates/projectdetail.html
+--- a/templates/projectdetail.html	(revision f5a51a48db43de811f38515de551be60a1c59e83)
++++ b/templates/projectdetail.html	(date 1651253929045)
+@@ -13,9 +13,9 @@
+         <form method="POST" enctype="multipart/form-data" action="/submissions/">
+             {% csrf_token %}
+             {{ form.as_p }}
+-            <input type="hidden" name="id" value="{{ item.id }}">
++            <input type="hidden" name="id" value="{{ project.id }}">
+             <input type="hidden" name="type" value="0">
+-            <button type="submit" class="btn btn-primary">submit</button>
++            <button type="submit">submit</button>
+         </form>
+ 
+         <ul>
+@@ -25,13 +25,13 @@
+         </ul>
+         <hr>
+ 
+-        <a href="/dataFiles?title={{ item.projectTitle }}">Download Data</a>
++        <a href="/dataFiles?title={{ project.projectTitle }}">Download Data</a>
+         <form method="POST" enctype="multipart/form-data">
+             {% csrf_token %}
+             {{ form.as_p }}
+-            <input type="hidden" name="id" value="{{ item.id }}">
++            <input type="hidden" name="id" value="{{  project.id }}">
+             <input type="hidden" name="type" value="1">
+-            <button type="submit" class="btn btn-primary">submit</button>
++            <button type="submit">submit</button>
+         </form>
+ 
+         <ul>
+@@ -41,13 +41,13 @@
+         </ul>
+ 
+         <hr>
+-        <a href="/resultFiles?title={{ item.projectTitle }}">Download Results</a>
++        <a href="/resultFiles?title={{ project.projectTitle }}">Download Results</a>
+         <form method="POST" enctype="multipart/form-data">
+             {% csrf_token %}
+             {{ form.as_p }}
+-            <input type="hidden" name="id" value="{{ item.id }}">
++            <input type="hidden" name="id" value="{{ project.id }}">
+             <input type="hidden" name="type" value="2">
+-            <button type="submit" class="btn btn-primary">submit</button>
++            <button type="submit">submit</button>
+         </form>
+ 
+         <ul>
+@@ -56,4 +56,4 @@
+             {% endfor %}
+         </ul>
+     </div>
+-{% endblock %}
+\ No newline at end of file
++{% endblock %}
+Index: home/migrations/0003_auto_20220429_0410.py
+===================================================================
+diff --git a/home/migrations/0003_auto_20220429_0410.py b/home/migrations/0003_auto_20220429_0410.py
+deleted file mode 100644
+--- a/home/migrations/0003_auto_20220429_0410.py	(revision f5a51a48db43de811f38515de551be60a1c59e83)
++++ /dev/null	(revision f5a51a48db43de811f38515de551be60a1c59e83)
+@@ -1,26 +0,0 @@
+-# Generated by Django 3.2.12 on 2022-04-29 10:10
+-
+-from django.db import migrations, models
+-
+-
+-class Migration(migrations.Migration):
+-
+-    dependencies = [
+-        ('home', '0002_auto_20220429_0337'),
+-    ]
+-
+-    operations = [
+-        migrations.RenameField(
+-            model_name='projectfile',
+-            old_name='dataFile',
+-            new_name='file',
+-        ),
+-        migrations.AddField(
+-            model_name='projectfile',
+-            name='type',
+-            field=models.IntegerField(blank=True, default=0),
+-        ),
+-        migrations.DeleteModel(
+-            name='ResultFile',
+-        ),
+-    ]
+Index: home/migrations/0002_auto_20220429_0337.py
+===================================================================
+diff --git a/home/migrations/0002_auto_20220429_0337.py b/home/migrations/0002_auto_20220429_0337.py
+deleted file mode 100644
+--- a/home/migrations/0002_auto_20220429_0337.py	(revision f5a51a48db43de811f38515de551be60a1c59e83)
++++ /dev/null	(revision f5a51a48db43de811f38515de551be60a1c59e83)
+@@ -1,21 +0,0 @@
+-# Generated by Django 3.2.12 on 2022-04-29 09:37
+-
+-from django.db import migrations
+-
+-
+-class Migration(migrations.Migration):
+-
+-    dependencies = [
+-        ('home', '0001_initial'),
+-    ]
+-
+-    operations = [
+-        migrations.RemoveField(
+-            model_name='projectfile',
+-            name='type',
+-        ),
+-        migrations.RemoveField(
+-            model_name='resultfile',
+-            name='type',
+-        ),
+-    ]
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"AnalysisUIOptions\">\n    <option name=\"SCOPE_TYPE\" value=\"3\" />\n  </component>\n  <component name=\"AutoImportSettings\">\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\n  </component>\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"2b02c2c1-1613-4822-a35f-dc76262b1d25\" name=\"Changes\" comment=\"Fixed search results issue\">\n      <change afterPath=\"$PROJECT_DIR$/home/migrations/0001_initial.py\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/home/migrations/0002_auto_20220429_0337.py\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/home/migrations/0003_auto_20220429_0410.py\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/users/migrations/0001_initial.py\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/.idea/capstone.iml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/capstone.iml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/.idea/misc.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/misc.xml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_3_28_22__1_07_PM__Changes_.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_3_28_22__1_07_PM__Changes_.xml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_4_20_22__10_58_AM__Changes_.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_4_20_22__10_58_AM__Changes_.xml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_4_22_22__11_23_AM__Changes_.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_4_22_22__11_23_AM__Changes_.xml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_4_25_22__11_26_AM__Changes_.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_4_25_22__11_26_AM__Changes_.xml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/home/admin.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/home/admin.py\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/home/forms.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/home/forms.py\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/home/models.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/home/models.py\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/home/urls.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/home/urls.py\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/home/views.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/home/views.py\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/templates/myproposals.html\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/templates/myproposals.html\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/templates/projectdetail.html\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/templates/projectdetail.html\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/todo.txt\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/todo.txt\" afterDir=\"false\" />\n    </list>\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"DjangoConsoleOptions\" custom-start-script=\"import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)\">\n    <option name=\"myCustomStartScript\" value=\"import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)\" />\n  </component>\n  <component name=\"FileTemplateManagerImpl\">\n    <option name=\"RECENT_TEMPLATES\">\n      <list>\n        <option value=\"Python Script\" />\n        <option value=\"HTML File\" />\n        <option value=\"CSS File\" />\n      </list>\n    </option>\n  </component>\n  <component name=\"FlaskConsoleOptions\" custom-start-script=\"import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\\nApp: %s [%s]\\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))\">\n    <envs>\n      <env key=\"FLASK_APP\" value=\"app\" />\n    </envs>\n    <option name=\"myCustomStartScript\" value=\"import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\\nApp: %s [%s]\\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))\" />\n    <option name=\"myEnvs\">\n      <map>\n        <entry key=\"FLASK_APP\" value=\"app\" />\n      </map>\n    </option>\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n  </component>\n  <component name=\"GitSEFilterConfiguration\">\n    <file-type-list>\n      <filtered-out-file-type name=\"LOCAL_BRANCH\" />\n      <filtered-out-file-type name=\"REMOTE_BRANCH\" />\n      <filtered-out-file-type name=\"TAG\" />\n      <filtered-out-file-type name=\"COMMIT_BY_MESSAGE\" />\n    </file-type-list>\n  </component>\n  <component name=\"MarkdownSettingsMigration\">\n    <option name=\"stateVersion\" value=\"1\" />\n  </component>\n  <component name=\"ProblemsViewState\">\n    <option name=\"selectedTabId\" value=\"CurrentFile\" />\n  </component>\n  <component name=\"ProjectId\" id=\"249gLcM4fnWOsFq33r8hgq5XGRS\" />\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\"><![CDATA[{\n  \"keyToString\": {\n    \"RunOnceActivity.OpenProjectViewOnStart\": \"true\",\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\n    \"WebServerToolWindowFactoryState\": \"false\",\n    \"settings.editor.selected.configurable\": \"com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable\"\n  }\n}]]></component>\n  <component name=\"RecentsManager\">\n    <key name=\"MoveFile.RECENT_KEYS\">\n      <recent name=\"$PROJECT_DIR$/projects\" />\n      <recent name=\"$PROJECT_DIR$\" />\n      <recent name=\"$PROJECT_DIR$/submissions/projects/projects\" />\n      <recent name=\"$PROJECT_DIR$/submissions\" />\n      <recent name=\"$PROJECT_DIR$/projects/projects/proposals\" />\n    </key>\n  </component>\n  <component name=\"RunManager\">\n    <configuration name=\"capstone\" type=\"Python.DjangoServer\" factoryName=\"Django server\">\n      <module name=\"capstone\" />\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\n      <option name=\"PARENT_ENVS\" value=\"true\" />\n      <envs>\n        <env name=\"PYTHONUNBUFFERED\" value=\"1\" />\n        <env name=\"DJANGO_SETTINGS_MODULE\" value=\"capstone.settings\" />\n      </envs>\n      <option name=\"SDK_HOME\" value=\"\" />\n      <option name=\"WORKING_DIRECTORY\" value=\"\" />\n      <option name=\"IS_MODULE_SDK\" value=\"false\" />\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\n      <option name=\"launchJavascriptDebuger\" value=\"false\" />\n      <option name=\"port\" value=\"8000\" />\n      <option name=\"host\" value=\"\" />\n      <option name=\"additionalOptions\" value=\"\" />\n      <option name=\"browserUrl\" value=\"\" />\n      <option name=\"runTestServer\" value=\"false\" />\n      <option name=\"runNoReload\" value=\"false\" />\n      <option name=\"useCustomRunCommand\" value=\"false\" />\n      <option name=\"customRunCommand\" value=\"\" />\n      <method v=\"2\" />\n    </configuration>\n  </component>\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"2b02c2c1-1613-4822-a35f-dc76262b1d25\" name=\"Changes\" comment=\"\" />\n      <created>1643048163059</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1643048163059</updated>\n      <workItem from=\"1643048164715\" duration=\"1491000\" />\n      <workItem from=\"1643128707814\" duration=\"13000\" />\n      <workItem from=\"1643395146168\" duration=\"499000\" />\n      <workItem from=\"1644268656761\" duration=\"1321000\" />\n      <workItem from=\"1644861581885\" duration=\"3100000\" />\n      <workItem from=\"1644865616095\" duration=\"5641000\" />\n      <workItem from=\"1644884092233\" duration=\"6612000\" />\n      <workItem from=\"1645036526931\" duration=\"643000\" />\n      <workItem from=\"1645037245486\" duration=\"112000\" />\n      <workItem from=\"1645047313321\" duration=\"994000\" />\n      <workItem from=\"1645050337561\" duration=\"3928000\" />\n      <workItem from=\"1645054772366\" duration=\"32000\" />\n      <workItem from=\"1645639183763\" duration=\"729000\" />\n      <workItem from=\"1645639965502\" duration=\"2133000\" />\n      <workItem from=\"1645645642138\" duration=\"2449000\" />\n      <workItem from=\"1646416763605\" duration=\"628000\" />\n      <workItem from=\"1646678654504\" duration=\"20000\" />\n      <workItem from=\"1646678863892\" duration=\"57000\" />\n      <workItem from=\"1646848574151\" duration=\"3460000\" />\n      <workItem from=\"1646852693249\" duration=\"70000\" />\n      <workItem from=\"1647876812565\" duration=\"65000\" />\n      <workItem from=\"1648054384567\" duration=\"3280000\" />\n      <workItem from=\"1648058550103\" duration=\"5162000\" />\n      <workItem from=\"1648071145818\" duration=\"3891000\" />\n      <workItem from=\"1648133941954\" duration=\"1611000\" />\n      <workItem from=\"1648146674553\" duration=\"2826000\" />\n      <workItem from=\"1648170940354\" duration=\"217000\" />\n      <workItem from=\"1648227519726\" duration=\"351000\" />\n      <workItem from=\"1648407097512\" duration=\"245000\" />\n      <workItem from=\"1648407436661\" duration=\"131000\" />\n      <workItem from=\"1648484093533\" duration=\"926000\" />\n      <workItem from=\"1648485822418\" duration=\"440000\" />\n      <workItem from=\"1648486609452\" duration=\"3084000\" />\n      <workItem from=\"1648491106472\" duration=\"3717000\" />\n      <workItem from=\"1648503326689\" duration=\"9781000\" />\n      <workItem from=\"1648573845698\" duration=\"5093000\" />\n      <workItem from=\"1648595550338\" duration=\"4006000\" />\n      <workItem from=\"1648659238471\" duration=\"156000\" />\n      <workItem from=\"1648659593627\" duration=\"6059000\" />\n      <workItem from=\"1648666925935\" duration=\"6346000\" />\n      <workItem from=\"1648741247244\" duration=\"26000\" />\n      <workItem from=\"1648741292701\" duration=\"6000\" />\n      <workItem from=\"1648741332171\" duration=\"350000\" />\n      <workItem from=\"1648743901322\" duration=\"107000\" />\n      <workItem from=\"1648744422678\" duration=\"2000\" />\n      <workItem from=\"1648745517805\" duration=\"3162000\" />\n      <workItem from=\"1648767004197\" duration=\"2388000\" />\n      <workItem from=\"1648769709195\" duration=\"2435000\" />\n      <workItem from=\"1648829202442\" duration=\"837000\" />\n      <workItem from=\"1648832174158\" duration=\"248000\" />\n      <workItem from=\"1648925021808\" duration=\"347000\" />\n      <workItem from=\"1649091447775\" duration=\"3114000\" />\n      <workItem from=\"1649095333357\" duration=\"4776000\" />\n      <workItem from=\"1649103731933\" duration=\"2374000\" />\n      <workItem from=\"1649264181168\" duration=\"2653000\" />\n      <workItem from=\"1649272451160\" duration=\"1615000\" />\n      <workItem from=\"1649279632910\" duration=\"4675000\" />\n      <workItem from=\"1649437449303\" duration=\"2129000\" />\n      <workItem from=\"1649440111741\" duration=\"677000\" />\n      <workItem from=\"1649692731738\" duration=\"2607000\" />\n      <workItem from=\"1649696410616\" duration=\"2644000\" />\n      <workItem from=\"1649711783996\" duration=\"2891000\" />\n      <workItem from=\"1649720010270\" duration=\"5991000\" />\n      <workItem from=\"1649823448347\" duration=\"153000\" />\n      <workItem from=\"1649869024334\" duration=\"2415000\" />\n      <workItem from=\"1650041869506\" duration=\"2566000\" />\n      <workItem from=\"1650301136506\" duration=\"3170000\" />\n      <workItem from=\"1650473908482\" duration=\"473000\" />\n      <workItem from=\"1650474615472\" duration=\"1664000\" />\n      <workItem from=\"1650646629240\" duration=\"2913000\" />\n      <workItem from=\"1650650662537\" duration=\"1551000\" />\n      <workItem from=\"1650828255746\" duration=\"19761000\" />\n      <workItem from=\"1650909568772\" duration=\"7561000\" />\n      <workItem from=\"1650919102647\" duration=\"16940000\" />\n      <workItem from=\"1650992179314\" duration=\"8901000\" />\n      <workItem from=\"1651008827772\" duration=\"2579000\" />\n      <workItem from=\"1651012890011\" duration=\"4052000\" />\n      <workItem from=\"1651078622359\" duration=\"2807000\" />\n      <workItem from=\"1651106117638\" duration=\"1223000\" />\n      <workItem from=\"1651222973863\" duration=\"9773000\" />\n    </task>\n    <task id=\"LOCAL-00001\" summary=\"Made upload form and file model\">\n      <created>1644863885539</created>\n      <option name=\"number\" value=\"00001\" />\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1644863885539</updated>\n    </task>\n    <task id=\"LOCAL-00002\" summary=\"Got url with upload page working, upload functionality still has not been tested\">\n      <created>1644890560595</created>\n      <option name=\"number\" value=\"00002\" />\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1644890560595</updated>\n    </task>\n    <task id=\"LOCAL-00003\" summary=\"Upload functionality working, sort of..\">\n      <created>1645054796549</created>\n      <option name=\"number\" value=\"00003\" />\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1645054796549</updated>\n    </task>\n    <task id=\"LOCAL-00004\" summary=\"Both upload and download functionality working\">\n      <created>1645647821306</created>\n      <option name=\"number\" value=\"00004\" />\n      <option name=\"presentableId\" value=\"LOCAL-00004\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1645647821306</updated>\n    </task>\n    <task id=\"LOCAL-00005\" summary=\"Slight tweak, upload and download functionality still working\">\n      <created>1645648159706</created>\n      <option name=\"number\" value=\"00005\" />\n      <option name=\"presentableId\" value=\"LOCAL-00005\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1645648159706</updated>\n    </task>\n    <task id=\"LOCAL-00006\" summary=\"Started search querying, having issues running the server\">\n      <created>1646852750384</created>\n      <option name=\"number\" value=\"00006\" />\n      <option name=\"presentableId\" value=\"LOCAL-00006\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1646852750384</updated>\n    </task>\n    <task id=\"LOCAL-00007\" summary=\"Some kinks need to be worked out, but the file upload and search functionality are working in unison\">\n      <created>1648148805525</created>\n      <option name=\"number\" value=\"00007\" />\n      <option name=\"presentableId\" value=\"LOCAL-00007\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1648148805525</updated>\n    </task>\n    <task id=\"LOCAL-00008\" summary=\"Some kinks worked out\">\n      <created>1648149191871</created>\n      <option name=\"number\" value=\"00008\" />\n      <option name=\"presentableId\" value=\"LOCAL-00008\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1648149191871</updated>\n    </task>\n    <task id=\"LOCAL-00009\" summary=\"the core flow of the database is working, from uploading projects, to approving them, and searching them.\">\n      <created>1648510486415</created>\n      <option name=\"number\" value=\"00009\" />\n      <option name=\"presentableId\" value=\"LOCAL-00009\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1648510486415</updated>\n    </task>\n    <task id=\"LOCAL-00010\" summary=\"Getting microsoft oauth implemented, work in progress\">\n      <created>1648516781344</created>\n      <option name=\"number\" value=\"00010\" />\n      <option name=\"presentableId\" value=\"LOCAL-00010\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1648516781344</updated>\n    </task>\n    <task id=\"LOCAL-00011\" summary=\"Still some kinks needed to workouti in Ouath2\">\n      <created>1648579175172</created>\n      <option name=\"number\" value=\"00011\" />\n      <option name=\"presentableId\" value=\"LOCAL-00011\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1648579175172</updated>\n    </task>\n    <task id=\"LOCAL-00012\" summary=\"Oauth2 now working\">\n      <created>1648685673756</created>\n      <option name=\"number\" value=\"00012\" />\n      <option name=\"presentableId\" value=\"LOCAL-00012\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1648685673756</updated>\n    </task>\n    <task id=\"LOCAL-00013\" summary=\"Oauth2 now working\">\n      <created>1649091696566</created>\n      <option name=\"number\" value=\"00013\" />\n      <option name=\"presentableId\" value=\"LOCAL-00013\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1649091696566</updated>\n    </task>\n    <task id=\"LOCAL-00014\" summary=\"Oauth2 now working with pages showing up\">\n      <created>1649092049742</created>\n      <option name=\"number\" value=\"00014\" />\n      <option name=\"presentableId\" value=\"LOCAL-00014\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1649092049742</updated>\n    </task>\n    <task id=\"LOCAL-00015\" summary=\"Gor default ahutor field working\">\n      <created>1649097618394</created>\n      <option name=\"number\" value=\"00015\" />\n      <option name=\"presentableId\" value=\"LOCAL-00015\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1649097618395</updated>\n    </task>\n    <task id=\"LOCAL-00016\" summary=\"Gor default author field working\">\n      <created>1649098054804</created>\n      <option name=\"number\" value=\"00016\" />\n      <option name=\"presentableId\" value=\"LOCAL-00016\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1649098054804</updated>\n    </task>\n    <task id=\"LOCAL-00017\" summary=\"Now able to check for staff\">\n      <created>1649267399663</created>\n      <option name=\"number\" value=\"00017\" />\n      <option name=\"presentableId\" value=\"LOCAL-00017\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1649267399663</updated>\n    </task>\n    <task id=\"LOCAL-00018\" summary=\"Fix CSS issue\">\n      <created>1649438164870</created>\n      <option name=\"number\" value=\"00018\" />\n      <option name=\"presentableId\" value=\"LOCAL-00018\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1649438164871</updated>\n    </task>\n    <task id=\"LOCAL-00019\" summary=\"Got permissions in a good state\">\n      <created>1649438846476</created>\n      <option name=\"number\" value=\"00019\" />\n      <option name=\"presentableId\" value=\"LOCAL-00019\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1649438846476</updated>\n    </task>\n    <task id=\"LOCAL-00020\" summary=\"Blocked admin access\">\n      <created>1649439151969</created>\n      <option name=\"number\" value=\"00020\" />\n      <option name=\"presentableId\" value=\"LOCAL-00020\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1649439151969</updated>\n    </task>\n    <task id=\"LOCAL-00021\" summary=\"Auto date generation and different file upload sections\">\n      <created>1649694460249</created>\n      <option name=\"number\" value=\"00021\" />\n      <option name=\"presentableId\" value=\"LOCAL-00021\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1649694460249</updated>\n    </task>\n    <task id=\"LOCAL-00022\" summary=\"Auto date generation and different file upload sections\">\n      <created>1649694702426</created>\n      <option name=\"number\" value=\"00022\" />\n      <option name=\"presentableId\" value=\"LOCAL-00022\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1649694702426</updated>\n    </task>\n    <task id=\"LOCAL-00023\" summary=\"Added some styling\">\n      <created>1649715575371</created>\n      <option name=\"number\" value=\"00023\" />\n      <option name=\"presentableId\" value=\"LOCAL-00023\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1649715575371</updated>\n    </task>\n    <task id=\"LOCAL-00024\" summary=\"Date and Author field are now read only\">\n      <created>1649722375058</created>\n      <option name=\"number\" value=\"00024\" />\n      <option name=\"presentableId\" value=\"LOCAL-00024\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1649722375058</updated>\n    </task>\n    <task id=\"LOCAL-00025\" summary=\"making date and author field read only causes issues\">\n      <created>1649726331005</created>\n      <option name=\"number\" value=\"00025\" />\n      <option name=\"presentableId\" value=\"LOCAL-00025\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1649726331005</updated>\n    </task>\n    <task id=\"LOCAL-00026\" summary=\"More styling\">\n      <created>1649726862476</created>\n      <option name=\"number\" value=\"00026\" />\n      <option name=\"presentableId\" value=\"LOCAL-00026\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1649726862476</updated>\n    </task>\n    <task id=\"LOCAL-00027\" summary=\"More styling\">\n      <created>1649726896951</created>\n      <option name=\"number\" value=\"00027\" />\n      <option name=\"presentableId\" value=\"LOCAL-00027\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1649726896951</updated>\n    </task>\n    <task id=\"LOCAL-00028\" summary=\"More styling\">\n      <created>1650041903678</created>\n      <option name=\"number\" value=\"00028\" />\n      <option name=\"presentableId\" value=\"LOCAL-00028\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1650041903679</updated>\n    </task>\n    <task id=\"LOCAL-00029\" summary=\"Styled up the my proposals page\">\n      <created>1650044441048</created>\n      <option name=\"number\" value=\"00029\" />\n      <option name=\"presentableId\" value=\"LOCAL-00029\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1650044441048</updated>\n    </task>\n    <task id=\"LOCAL-00030\" summary=\"More styling\">\n      <created>1650302147014</created>\n      <option name=\"number\" value=\"00030\" />\n      <option name=\"presentableId\" value=\"LOCAL-00030\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1650302147014</updated>\n    </task>\n    <task id=\"LOCAL-00031\" summary=\"File validation and downloading working.\">\n      <created>1650475990890</created>\n      <option name=\"number\" value=\"00031\" />\n      <option name=\"presentableId\" value=\"LOCAL-00031\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1650475990891</updated>\n    </task>\n    <task id=\"LOCAL-00032\" summary=\"Got file uploading for dataset figured out somewhat\">\n      <created>1650849405403</created>\n      <option name=\"number\" value=\"00032\" />\n      <option name=\"presentableId\" value=\"LOCAL-00032\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1650849405403</updated>\n    </task>\n    <task id=\"LOCAL-00033\" summary=\"Got file uploading for dataset figured out somewhat\">\n      <created>1650850049974</created>\n      <option name=\"number\" value=\"00033\" />\n      <option name=\"presentableId\" value=\"LOCAL-00033\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1650850049974</updated>\n    </task>\n    <task id=\"LOCAL-00034\" summary=\"File upload for results and dataset working\">\n      <created>1650908660972</created>\n      <option name=\"number\" value=\"00034\" />\n      <option name=\"presentableId\" value=\"LOCAL-00034\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1650908660972</updated>\n    </task>\n    <task id=\"LOCAL-00035\" summary=\"File upload for results and dataset working\">\n      <created>1650908692159</created>\n      <option name=\"number\" value=\"00035\" />\n      <option name=\"presentableId\" value=\"LOCAL-00035\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1650908692159</updated>\n    </task>\n    <task id=\"LOCAL-00036\" summary=\"File upload and download for results and dataset working, still issues\">\n      <created>1650917362146</created>\n      <option name=\"number\" value=\"00036\" />\n      <option name=\"presentableId\" value=\"LOCAL-00036\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1650917362146</updated>\n    </task>\n    <task id=\"LOCAL-00037\" summary=\"File upload and download for results and dataset working, still issues\">\n      <created>1650917386867</created>\n      <option name=\"number\" value=\"00037\" />\n      <option name=\"presentableId\" value=\"LOCAL-00037\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1650917386867</updated>\n    </task>\n    <task id=\"LOCAL-00038\" summary=\"Changes made:&#10;1. took out the download aspect on my proposal.&#10;2. Got search rolling to be able to download both data and results.&#10;3. changed to update or create in uploading both data and result files\">\n      <created>1651001625595</created>\n      <option name=\"number\" value=\"00038\" />\n      <option name=\"presentableId\" value=\"LOCAL-00038\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1651001625595</updated>\n    </task>\n    <task id=\"LOCAL-00039\" summary=\"Download and Upload arew working for both result and data files\">\n      <created>1651011535686</created>\n      <option name=\"number\" value=\"00039\" />\n      <option name=\"presentableId\" value=\"LOCAL-00039\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1651011535686</updated>\n    </task>\n    <task id=\"LOCAL-00040\" summary=\"Cleaned up search functionality\">\n      <created>1651017335862</created>\n      <option name=\"number\" value=\"00040\" />\n      <option name=\"presentableId\" value=\"LOCAL-00040\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1651017335862</updated>\n    </task>\n    <task id=\"LOCAL-00041\" summary=\"Fixed table issue\">\n      <created>1651079717337</created>\n      <option name=\"number\" value=\"00041\" />\n      <option name=\"presentableId\" value=\"LOCAL-00041\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1651079717337</updated>\n    </task>\n    <task id=\"LOCAL-00042\" summary=\"Validation error checking\">\n      <created>1651080113459</created>\n      <option name=\"number\" value=\"00042\" />\n      <option name=\"presentableId\" value=\"LOCAL-00042\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1651080113459</updated>\n    </task>\n    <task id=\"LOCAL-00043\" summary=\"Fixed search results issue\">\n      <created>1651081301458</created>\n      <option name=\"number\" value=\"00043\" />\n      <option name=\"presentableId\" value=\"LOCAL-00043\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1651081301458</updated>\n    </task>\n    <option name=\"localTasksCounter\" value=\"44\" />\n    <servers />\n  </component>\n  <component name=\"TypeScriptGeneratedFilesManager\">\n    <option name=\"version\" value=\"3\" />\n  </component>\n  <component name=\"Vcs.Log.Tabs.Properties\">\n    <option name=\"TAB_STATES\">\n      <map>\n        <entry key=\"MAIN\">\n          <value>\n            <State />\n          </value>\n        </entry>\n      </map>\n    </option>\n  </component>\n  <component name=\"VcsManagerConfiguration\">\n    <MESSAGE value=\"Still some kinks needed to workouti in Ouath2\" />\n    <MESSAGE value=\"Oauth2 now working\" />\n    <MESSAGE value=\"Oauth2 now working with pages showing up\" />\n    <MESSAGE value=\"Gor default ahutor field working\" />\n    <MESSAGE value=\"Gor default author field working\" />\n    <MESSAGE value=\"Now able to check for staff\" />\n    <MESSAGE value=\"Fix CSS issue\" />\n    <MESSAGE value=\"Got permissions in a good state\" />\n    <MESSAGE value=\"Blocked admin access\" />\n    <MESSAGE value=\"Auto date generation and different file upload sections\" />\n    <MESSAGE value=\"Added some styling\" />\n    <MESSAGE value=\"Date and Author field are now read only\" />\n    <MESSAGE value=\"making date and author field read only causes issues\" />\n    <MESSAGE value=\"Styled up the my proposals page\" />\n    <MESSAGE value=\"More styling\" />\n    <MESSAGE value=\"File validation and downloading working.\" />\n    <MESSAGE value=\"Got file uploading for dataset figured out somewhat\" />\n    <MESSAGE value=\"File upload for results and dataset working\" />\n    <MESSAGE value=\"File upload and download for results and dataset working, still issues\" />\n    <MESSAGE value=\"Changes made:&#10;1. took out the download aspect on my proposal.&#10;2. Got search rolling to be able to download both data and results.&#10;3. changed to update or create in uploading both data and result files\" />\n    <MESSAGE value=\"Download and Upload arew working for both result and data files\" />\n    <MESSAGE value=\"Cleaned up search functionality\" />\n    <MESSAGE value=\"Fixed table issue\" />\n    <MESSAGE value=\"Validation error checking\" />\n    <MESSAGE value=\"Fixed search results issue\" />\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"Fixed search results issue\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision f5a51a48db43de811f38515de551be60a1c59e83)
++++ b/.idea/workspace.xml	(date 1651253648488)
+@@ -8,25 +8,14 @@
+   </component>
+   <component name="ChangeListManager">
+     <list default="true" id="2b02c2c1-1613-4822-a35f-dc76262b1d25" name="Changes" comment="Fixed search results issue">
+-      <change afterPath="$PROJECT_DIR$/home/migrations/0001_initial.py" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/home/migrations/0002_auto_20220429_0337.py" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/home/migrations/0003_auto_20220429_0410.py" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/users/migrations/0001_initial.py" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/capstone.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/capstone.iml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_3_28_22__1_07_PM__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_3_28_22__1_07_PM__Changes_.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_4_20_22__10_58_AM__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_4_20_22__10_58_AM__Changes_.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_4_22_22__11_23_AM__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_4_22_22__11_23_AM__Changes_.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_4_25_22__11_26_AM__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_4_25_22__11_26_AM__Changes_.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/home/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/home/admin.py" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/home/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/home/forms.py" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/home/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/home/models.py" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/home/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/home/urls.py" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/home/migrations/0002_auto_20220429_0337.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/home/migrations/0003_auto_20220429_0410.py" beforeDir="false" />
+       <change beforePath="$PROJECT_DIR$/home/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/home/views.py" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/templates/myproposals.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/myproposals.html" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/templates/projectdetail.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/projectdetail.html" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/todo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/todo.txt" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/users/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/views.py" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -78,14 +67,9 @@
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showLibraryContents" value="true" />
+   </component>
+-  <component name="PropertiesComponent"><![CDATA[{
+-  "keyToString": {
+-    "RunOnceActivity.OpenProjectViewOnStart": "true",
+-    "RunOnceActivity.ShowReadmeOnStart": "true",
+-    "WebServerToolWindowFactoryState": "false",
+-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+-  }
+-}]]></component>
++  <component name="PropertiesComponent">
++    <property name="node.js.selected.package.tslint" value="(autodetect)" />
++  </component>
+   <component name="RecentsManager">
+     <key name="MoveFile.RECENT_KEYS">
+       <recent name="$PROJECT_DIR$/projects" />
+Index: .gitignore
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/oauth_settings.yml\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.gitignore b/.gitignore
+--- a/.gitignore	(revision f5a51a48db43de811f38515de551be60a1c59e83)
++++ b/.gitignore	(date 1651252811679)
+@@ -1,1 +1,3 @@
+ /oauth_settings.yml
++/home/migrations/0001_initial.py
++/users/migrations/0001_initial.py
